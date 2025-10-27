@@ -10,7 +10,7 @@ public class Shop : InteractableObject
     {
         int totalCost = item.cost * quantity;
 
-        if (PlayerStats.Money >= totalCost)
+        if(PlayerStats.Money >= totalCost)
         {
             //Deduct from player's money
             PlayerStats.Spend(totalCost);
@@ -19,15 +19,13 @@ public class Shop : InteractableObject
 
             //Send it to player's inventory
             InventoryManager.Instance.ShopToInventory(purchasedItem);
-
-            // Report the quest progress for buying
-            QuestManager.Instance.ReportAction(QuestData.QuestType.BuySeed, item.name, quantity);
         }
     }
 
     public override void Pickup()
     {
         UIManager.Instance.OpenShop(shopItems);
+
     }
 
 }

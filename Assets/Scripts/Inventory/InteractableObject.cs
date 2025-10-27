@@ -7,7 +7,6 @@ public class InteractableObject : MonoBehaviour
     //The item information the GameObject is supposed to represent
     public ItemData item, waste;
     public int boost = 0;
-    public string cropType;
     public virtual void Pickup()
     {
         
@@ -19,13 +18,9 @@ public class InteractableObject : MonoBehaviour
             InventoryManager.Instance.EquipHandSlot(waste);
             InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);
         }
-
-        // Report Harvest Quest progress here
-        QuestManager.Instance.ReportAction(QuestData.QuestType.Harvest, cropType);
-
         //Set the player's inventory to the item
         //InventoryManager.Instance.EquipHandSlot(item);
-        // InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);
+       // InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);
 
         //InventoryManager.Instance.EquipHandSlot(waste);
         //InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);

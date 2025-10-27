@@ -30,30 +30,21 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""a1562640-5576-4fc0-9c9a-c7b09c0872dc"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Inventory"",
                     ""type"": ""Button"",
-                    ""id"": ""37ebb866-7123-4e91-ab5b-4aa5bb1159d5"",
-                    ""expectedControlType"": """",
+                    ""id"": ""a1562640-5576-4fc0-9c9a-c7b09c0872dc"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""WASD"",
-                    ""type"": ""Value"",
-                    ""id"": ""853da2f4-db38-4694-acf3-31bbcf56904f"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""37ebb866-7123-4e91-ab5b-4aa5bb1159d5"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -78,61 +69,6 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
                     ""action"": ""Inventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""45044b29-4b32-4bb4-928e-1b8553d7d26d"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""362ec0a8-ba0f-441a-81c9-13d660578f28"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""1570360b-4e92-4f47-b6c4-19d26f7678b9"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""5420218a-50c7-421c-81cd-849275ea039d"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""176aba38-85e6-4584-9afb-f88b104f3af8"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -143,7 +79,6 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
         m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
         m_Main_Move = m_Main.FindAction("Move", throwIfNotFound: true);
         m_Main_Inventory = m_Main.FindAction("Inventory", throwIfNotFound: true);
-        m_Main_WASD = m_Main.FindAction("WASD", throwIfNotFound: true);
     }
 
     ~@CustomActions()
@@ -212,14 +147,12 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
     private List<IMainActions> m_MainActionsCallbackInterfaces = new List<IMainActions>();
     private readonly InputAction m_Main_Move;
     private readonly InputAction m_Main_Inventory;
-    private readonly InputAction m_Main_WASD;
     public struct MainActions
     {
         private @CustomActions m_Wrapper;
         public MainActions(@CustomActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Main_Move;
         public InputAction @Inventory => m_Wrapper.m_Main_Inventory;
-        public InputAction @WASD => m_Wrapper.m_Main_WASD;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -235,9 +168,6 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
             @Inventory.started += instance.OnInventory;
             @Inventory.performed += instance.OnInventory;
             @Inventory.canceled += instance.OnInventory;
-            @WASD.started += instance.OnWASD;
-            @WASD.performed += instance.OnWASD;
-            @WASD.canceled += instance.OnWASD;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -248,9 +178,6 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
             @Inventory.started -= instance.OnInventory;
             @Inventory.performed -= instance.OnInventory;
             @Inventory.canceled -= instance.OnInventory;
-            @WASD.started -= instance.OnWASD;
-            @WASD.performed -= instance.OnWASD;
-            @WASD.canceled -= instance.OnWASD;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -272,6 +199,5 @@ public partial class @CustomActions: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
-        void OnWASD(InputAction.CallbackContext context);
     }
 }

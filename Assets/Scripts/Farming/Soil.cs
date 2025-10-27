@@ -228,12 +228,6 @@ public class Soil : MonoBehaviour, ITimeTracker
                 case EquipmentData.ToolType.WateringCan:
                     status.Water = true;
                     SwitchLandStatus(LandStatus.Watered);
-
-                    // Report watering for quest
-                    if (cropPlanted != null && cropPlanted.seedToGrow != null)
-                    {
-                        QuestManager.Instance.ReportAction(QuestData.QuestType.Water, cropPlanted.seedToGrow.seedType);
-                    }
                     break;
 
                 case EquipmentData.ToolType.Compost:
@@ -307,54 +301,31 @@ public class Soil : MonoBehaviour, ITimeTracker
         }
     }
 
-    private int lastRainDay = -1;
-    private bool wasRainingLastTick = false;
     public void ClockUpdate(GameTimestamp timestamp)
     {
         timeWatered2 = timestamp;
-        bool isRaining = WeatherManager.Instance != null && WeatherManager.Instance.IsRaining();
-
-        // Detect the moment it starts raining
-        if (isRaining && !wasRainingLastTick)
-        {
-            status.Water = true;
-            SwitchLandStatus(LandStatus.Watered);
-            timeWatered = TimeManager.Instance.GetGameTimestamp();
-
-            if (cropPlanted != null && cropPlanted.seedToGrow != null)
-            {
-                QuestManager.Instance.ReportAction(QuestData.QuestType.Water, cropPlanted.seedToGrow.seedType);
-            }
-
-            //Debug.Log("Soil watered due to rain.");
-        }
-
-        // Detect the moment rain stops
-        if (!isRaining && wasRainingLastTick)
-        {
-            status.Water = false;
-            SwitchLandStatus(LandStatus.Soil);
-            //Debug.Log("Rain stopped. Soil dried immediately.");
-        }
-
-        // Store the rain state for next tick
-        wasRainingLastTick = isRaining;
-
-        // Grow Logic
+        
+        //Checked if 24 hours has passed since last watered
         if (landStatus == LandStatus.Watered || landStatus == LandStatus.Compost)
         {
+            //Hours since the land wass watered
             int hoursElapsed = GameTimestamp.CompareTimestamps(timeWatered, timestamp);
-            if (hoursElapsed >= 1)
+            //Grow the planted crop, if any
+
+            Debug.Log(hoursElapsed);
+            if(hoursElapsed >= 1)
             {
                 if (cropPlanted != null)
                 {
                     cropPlanted.Grow();
                 }
+                //Dry up (Switch back to soil
                 SwitchLandStatus(LandStatus.Soil);
+                Debug.Log("tes");
                 status.Water = false;
             }
         }
-
+        
     }
 
     
