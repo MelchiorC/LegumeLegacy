@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0ebc6de5293224d8747bdbf4f1261f, type: 3}
+  m_Name: Bibit Puera
+  m_EditorClassIdentifier: 
+  description: Bibit Pueraria javanica cocok untuk dataran tinggi.
+  thumbnail: {fileID: 21300000, guid: c3935ffe00a9c964cae8ebcacb7a7347, type: 3}
+  gameModel: {fileID: 7410436148761554468, guid: 6cdcc13c01e6e8a468d42491e5286f57,
+    type: 3}
+  cost: 2000
+  compostmaterial: 0
+  daysToGrow: 1
+  cropToYield: {fileID: 11400000, guid: 46d9f3103a7c1c74bba7ec481af36335, type: 2}
+  seedling: {fileID: 7410436148761554468, guid: 6cdcc13c01e6e8a468d42491e5286f57,
+    type: 3}
+  seedling2: {fileID: 3406598834453736248, guid: 6b5e9510fe33347468fb3180e09129a2,
+    type: 3}
+  mature: {fileID: 3406598834453736248, guid: 6b5e9510fe33347468fb3180e09129a2, type: 3}
+  mature2: {fileID: 5646910193077083155, guid: 4d47adc6712232648bb619856425b106, type: 3}
+  mature3: {fileID: 5646910193077083155, guid: 4d47adc6712232648bb619856425b106, type: 3}
+  harvestable: {fileID: 7659616847719861739, guid: 5490d6f5b20e7ca41a696d699ac0ea1f,
+    type: 3}
+  waste: {fileID: 11400000, guid: fd72c20ee4aa0ff4987f588489636cfb, type: 2}
+  seedType: Puera

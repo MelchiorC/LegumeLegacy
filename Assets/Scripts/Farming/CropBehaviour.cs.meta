@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a050cc209928e40479da522d416ef24c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - seed: {instanceID: 0}
+  - seedling: {instanceID: 0}
+  - mature: {instanceID: 0}
+  - harvestable: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
