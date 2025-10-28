@@ -128,6 +128,9 @@ public class CropBehaviour : MonoBehaviour
             }
         }
         gameObject.SetActive(true);
+
+        // Report watering for quest
+        QuestManager.Instance.ReportAction(QuestData.QuestType.Water, seedToGrow.seedType);
     }
 
 
@@ -164,22 +167,15 @@ public class CropBehaviour : MonoBehaviour
                 mature3.SetActive(true);
                 break;
             case CropState.Harvestable:
-                var interactable = harvestable.GetComponent<InteractableObject>();
-
-                interactable.boost += planted.status.TotalPupuk;
-                interactable.cropType = seedToGrow.seedType; // Set crop type for quest tracking
-
+                harvestable.GetComponent<InteractableObject>().boost += planted.status.TotalPupuk;
                 if (planted.status.LandRotation)
                 {
-                    interactable.boost += 1;
+                    harvestable.GetComponent<InteractableObject>().boost += 1;
                 }
-
                 planted.status.TotalPupuk = 0;
                 planted.status.Compost = false;
-
                 harvestable.SetActive(true);
                 harvestable.transform.parent = null;
-
                 if (seedToGrow.seedType == "Legume")
                 {
                     planted.status.LandRotation = true;

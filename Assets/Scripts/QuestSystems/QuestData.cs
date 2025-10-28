@@ -8,17 +8,9 @@ public class QuestData : ScriptableObject
     public string questName;
     public string description;
 
-    public enum QuestType
-    {
-        Plant,
-        Water,
-        Harvest,
-        SellCrop,
-        BuySeed
-    }
-
+    public enum QuestType { Plant, Water, Harvest }
     public QuestType questType;
 
-    public string targetCrop;
+    public string targetCrop; // e.g., "Potato"
     public int requiredAmount = 1;
 }

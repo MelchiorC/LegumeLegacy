@@ -10,8 +10,7 @@ public class QuestManager : MonoBehaviour
     public List<QuestData> questList;
     public TMP_Text questUIText;
 
-    private Quest currentQuest;
-    private int currentQuestIndex = 0;
+    private List<Quest> activeQuests = new List<Quest>();
 
     private void Awake()
     {
@@ -20,53 +19,32 @@ public class QuestManager : MonoBehaviour
 
     private void Start()
     {
-        if (questList.Count > 0)
+        foreach (QuestData data in questList)
         {
-            currentQuest = new Quest(questList[0]);
-            UpdateUI();
+            activeQuests.Add(new Quest(data));
         }
+        UpdateUI();
     }
 
-    public void ReportAction(QuestData.QuestType actionType, string cropType, int quantity = 1)
+    public void ReportAction(QuestData.QuestType actionType, string cropType)
     {
-        if (currentQuest == null || currentQuest.isCompleted) return;
-
-        if (currentQuest.data.questType == actionType)
+        foreach (Quest quest in activeQuests)
         {
-            currentQuest.AddProgress(cropType, quantity);
-
-            if (currentQuest.isCompleted)
+            if (quest.data.questType == actionType && !quest.isCompleted)
             {
-                questUIText.text = "Selesai";
-                Invoke(nameof(AdvanceToNextQuest), 1.5f);
-            }
-            else
-            {
-                UpdateUI();
+                quest.AddProgress(cropType);
             }
         }
-    }
-
-    private void AdvanceToNextQuest()
-    {
-        currentQuestIndex++;
-
-        if (currentQuestIndex < questList.Count)
-        {
-            currentQuest = new Quest(questList[currentQuestIndex]);
-            UpdateUI();
-        }
-        else
-        {
-            questUIText.text = "Semua quest telah selesai!";
-        }
+        UpdateUI();
     }
 
     private void UpdateUI()
     {
-        if (currentQuest != null && !currentQuest.isCompleted)
+        string display = "";
+        foreach (Quest quest in activeQuests)
         {
-            questUIText.text = $"{currentQuest.data.questName}: {currentQuest.currentAmount}/{currentQuest.data.requiredAmount}";
+            display += $"{quest.data.questName}: {quest.currentAmount}/{quest.data.requiredAmount}\n";
         }
+        questUIText.text = display;
     }
 }

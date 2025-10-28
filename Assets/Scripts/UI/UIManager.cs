@@ -51,8 +51,8 @@ public class UIManager : MonoBehaviour, ITimeTracker
 
     [Header("Hara")]
     public GameObject Hara;
-
     public HaraImage change;
+
     public void Awake()
     {
         //If there is more than one instance, destroy the extra

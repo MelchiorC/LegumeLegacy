@@ -15,13 +15,13 @@ public class Quest
         currentAmount = 0;
     }
 
-    public void AddProgress(string cropType, int quantity = 1)
+    public void AddProgress(string cropType)
     {
         if (isCompleted) return;
 
         if (data.targetCrop == cropType)
         {
-            currentAmount += quantity;
+            currentAmount++;
         }
     }
 }
