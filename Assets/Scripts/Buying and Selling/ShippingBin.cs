@@ -26,8 +26,8 @@ public class ShippingBin : InteractableObject
         // Add money to player stats
         PlayerStats.Earn(moneyReceived);
 
-        // Report quest progress for selling
-        QuestManager.Instance.ReportAction(QuestData.QuestType.SellCrop, handSlot.itemData.name);
+        // Log the transaction
+        Debug.Log($"Sold {handSlot.itemData.name} x {handSlot.quantity} for {moneyReceived}");
 
         // Clear the hand slot as the item is sold
         handSlot.Empty();
