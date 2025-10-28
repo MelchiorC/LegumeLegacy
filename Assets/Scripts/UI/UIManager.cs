@@ -7,24 +7,32 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour, ITimeTracker
 {
     public static UIManager Instance { get; private set; }
-
     [Header("Status Bar")]
+    //Tool equip slot on status bar
     public Image toolEquipSlot;
+    //Tool quantity text on the status bar
     public Text toolQuantityText;
+    //Time UI
     public Text timeText;
     public Text dateText;
 
     [Header("Inventory System")]
+    //The inventory panel
     public GameObject inventoryPanel;
+
+    //The tool equip slot UI on the inventory panel
     public HandInventorySlot toolHandSlot;
+
+    //The tool slot UI's
+    public InventorySlot[] toolSlots;
+
+    //The item equip slot UI on the inventory panel
     public HandInventorySlot itemHandSlot;
 
-    [Header("Inventory UI")]
-    public Transform itemContentTransform;
-    public Transform toolContentTransform;
-    public GameObject slotPrefab;
+    //The item slot UI's
+    public InventorySlot[] itemSlots;
 
-    [Header("Item Info Box")]
+    //Item Info box
     public Text itemNameText;
     public Text itemDescriptionText;
 
@@ -37,21 +45,24 @@ public class UIManager : MonoBehaviour, ITimeTracker
     [Header("Shop")]
     public ShopListingManager shopListingManager;
 
+
     [Header("TimeSkip")]
     public TimeSkip skip;
 
     [Header("Hara")]
     public GameObject Hara;
-    public HaraImage change;
 
-    private void Awake()
+    public HaraImage change;
+    public void Awake()
     {
+        //If there is more than one instance, destroy the extra
         if (Instance != null && Instance != this)
         {
             Destroy(this);
         }
         else
         {
+            //Set the static instance to this instance
             Instance = this;
         }
     }
@@ -59,181 +70,170 @@ public class UIManager : MonoBehaviour, ITimeTracker
     private void Start()
     {
         RenderInventory();
+        AssignSlotIndexes();
         RenderPlayerStats();
 
-        // Add UIManager to TimeManager trackers
+        //Add UIManager to the list of objects TimeManager will notify when the time updates
         TimeManager.Instance.RegisterTracker(this);
     }
 
     public void TriggerYesNoPrompt(string message, System.Action onYesCallback)
     {
+        //Set active the gameobject of the Yes No Prompt
         yesNoPrompt.gameObject.SetActive(true);
+
         yesNoPrompt.CreatePrompt(message, onYesCallback);
     }
 
-    #region Inventory Management
+    #region Inventory
+    //Iterate through the slot UI elements and assign its reference slot index
+    public void AssignSlotIndexes()
+    {
+        for (int i = 0; i < toolSlots.Length; i++)
+        {
+            toolSlots[i].AssignIndex(i);
+            itemSlots[i].AssignIndex(i);
+        }
+    }
 
+    //Render the inventory screen to reflect the player's inventory
     public void RenderInventory()
     {
-        // Get inventory data
-        List<ItemSlotData> inventoryToolSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Tool);
-        List<ItemSlotData> inventoryItemSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Item);
+        //Get the respective slots to process
+        ItemSlotData[] inventoryToolSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Tool);
+        ItemSlotData[] inventoryItemSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Item);
+        //Render the tool section
+        RenderInventoryPanel(inventoryToolSlots, toolSlots);
 
-        // Render tool and item sections dynamically
-        RenderInventoryPanel(inventoryToolSlots, toolContentTransform, InventorySlot.InventoryType.Tool);
-        RenderInventoryPanel(inventoryItemSlots, itemContentTransform, InventorySlot.InventoryType.Item);
+        //Render the item section
+        RenderInventoryPanel(inventoryItemSlots, itemSlots);
 
-        // Render equipped slots
+        //Render the equipped slots
         toolHandSlot.Display(InventoryManager.Instance.GetEquippedSlot(InventorySlot.InventoryType.Tool));
         itemHandSlot.Display(InventoryManager.Instance.GetEquippedSlot(InventorySlot.InventoryType.Item));
 
-        // Update tool equip UI
-        UpdateToolEquipUI();
-    }
-
-    private void RenderInventoryPanel(List<ItemSlotData> slots, Transform contentTransform, InventorySlot.InventoryType inventoryType)
-    {
-        // Ensure the number of UI slots matches the inventory data
-        for (int i = contentTransform.childCount; i < slots.Count; i++)
-        {
-            AddInventorySlotUI(inventoryType);
-        }
-
-        for (int i = 0; i < contentTransform.childCount; i++)
-        {
-            InventorySlot slotUI = contentTransform.GetChild(i).GetComponent<InventorySlot>();
-            if (slotUI != null)
-            {
-                if (i < slots.Count)
-                {
-                    // Display the actual inventory data
-                    slotUI.Display(slots[i]);
-                }
-                else
-                {
-                    // Clear the slot if there's no corresponding data
-                    slotUI.Display(new ItemSlotData(null, 0));
-                }
-            }
-        }
-    }
-
-    private void UpdateToolEquipUI()
-    {
+        //Get tool equip from Inventory manager
         ItemData equippedTool = InventoryManager.Instance.GetEquippedSlotItem(InventorySlot.InventoryType.Tool);
+
+        //Text should be empty by default
         toolQuantityText.text = "";
 
+        //Check if there is an item to display
         if (equippedTool != null)
         {
+            //Switch the thumbnail over
             toolEquipSlot.sprite = equippedTool.thumbnail;
+
             toolEquipSlot.gameObject.SetActive(true);
 
+            //Get quantity
             int quantity = InventoryManager.Instance.GetEquippedSlot(InventorySlot.InventoryType.Tool).quantity;
-            if (quantity > 1)
+            if(quantity > 1)
             {
                 toolQuantityText.text = quantity.ToString();
             }
+
+            return;
         }
-        else
+
+        toolEquipSlot.gameObject.SetActive(false);
+    }
+
+    //Iterate through a slot in a section and display the in the UI
+    void RenderInventoryPanel(ItemSlotData[] slots, InventorySlot[] uiSlots)
+    {
+        for (int i = 0; i < uiSlots.Length; i++)
         {
-            toolEquipSlot.gameObject.SetActive(false);
+            //Display item accordingly
+            uiSlots[i].Display(slots[i]);
         }
     }
 
     public void ToggleInventoryPanel()
     {
+        //If the panel is hidden, show it and vice versa
         inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+
         RenderInventory();
     }
 
+    //Display item info on the item infobox
     public void DisplayItemInfo(ItemData data)
     {
-        if (data == null)
+        //If data is null, reset
+        if(data == null)
         {
             itemNameText.text = "";
             itemDescriptionText.text = "";
+
             return;
         }
+
 
         itemNameText.text = data.name;
         itemDescriptionText.text = data.description;
     }
-
-    public void AddInventorySlotUI(InventorySlot.InventoryType inventoryType)
-    {
-        Transform contentTransform = inventoryType == InventorySlot.InventoryType.Item ? itemContentTransform : toolContentTransform;
-
-        GameObject newSlotUI = Instantiate(slotPrefab, contentTransform);
-
-        InventorySlot slotUI = newSlotUI.GetComponent<InventorySlot>();
-        if (slotUI != null)
-        {
-            slotUI.inventoryType = inventoryType;
-            int newIndex = contentTransform.childCount - 1; // Get the new slot's index
-            slotUI.AssignIndex(newIndex);
-
-            Debug.Log($"Added new UI slot at index {newIndex} for {inventoryType} inventory.");
-        }
-    }
-
-    public int GetUIInventorySlotCount(InventorySlot.InventoryType inventoryType)
-    {
-        if (inventoryType == InventorySlot.InventoryType.Item)
-        {
-            return itemContentTransform.childCount;
-        }
-        else if (inventoryType == InventorySlot.InventoryType.Tool)
-        {
-            return toolContentTransform.childCount;
-        }
-
-        return 0;
-    }
-
     #endregion
 
-    #region Time Management
-
+    #region Time
+    //Callback to handle the UI for time
     public void ClockUpdate(GameTimestamp timestamp)
     {
+        //Handles the time
+        //Get the hours and minutes
         int hours = timestamp.hour;
         int minutes = timestamp.minute;
 
-        string prefix = hours >= 12 ? "PM " : "AM ";
-        hours = hours > 12 ? hours - 12 : hours;
+        //AM or PM
+        string prefix = "AM ";
 
-        timeText.text = $"{prefix}{hours}:{minutes:D2}";
+        //Convert hours to 12 hour clock
+        if(hours > 12)
+        {
+            //Time becomes PM
+            prefix = "PM ";
+            hours -= 12;
+        }
 
+        //Format it for the time display
+        timeText.text = prefix + hours + ":" + minutes.ToString("00");
+
+        //Handles the date
         int day = timestamp.day;
         string season = timestamp.season.ToString();
         string dayOfTheWeek = timestamp.GetDayOfTheWeek().ToString();
 
-        dateText.text = $"{season} {day} ({dayOfTheWeek})";
+        //Format it for the date text diplay
+        dateText.text = season + " " + day + " (" + dayOfTheWeek + ")";
     }
-
     #endregion
 
+    //Render the UI of the player stats in the HUD
     public void RenderPlayerStats()
     {
         moneyText.text = PlayerStats.Money + PlayerStats.CURRENCY;
     }
 
+    //Open the shop window with the shop items listed
     public void OpenShop(List<ItemData> shopItems)
     {
+        //Set active the shop window
         shopListingManager.gameObject.SetActive(true);
         shopListingManager.RenderShop(shopItems);
     }
 
-    public void OpenUI(bool water, bool compost, bool stick, bool trellis)
+    public void OpenUI(bool water, bool compost, bool stick, bool treli)
     {
         change.IsItWatered(water);
         change.CompostYes(compost);
-        change.StickYes(stick, trellis);
+        change.StickYes(stick, treli);
         Hara.gameObject.SetActive(true);
     }
 
     public void CloseUI()
     {
+        // Hide the UI elements and deactivate the Hara GameObject
         Hara.gameObject.SetActive(false);
     }
+
 }
