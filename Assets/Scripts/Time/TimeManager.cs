@@ -55,17 +55,24 @@ public class TimeManager : MonoBehaviour
     }
 
     //A tick of the in-game time
+    private int lastDayChecked = -1;
+
     public void Tick()
     {
         timestamp.UpdateClock();
 
-        //Inform each of the listeners of the new time state
-        foreach(ITimeTracker listener in listeners)
+        // Inform each of the listeners of the new time state
+        foreach (ITimeTracker listener in listeners)
         {
             listener.ClockUpdate(timestamp);
         }
 
-        //UpdateSunMovement();
+        // Only update weather when the day changes
+        if (timestamp.hour == 0 && timestamp.minute == 0 && timestamp.day != lastDayChecked)
+        {
+            lastDayChecked = timestamp.day;
+            WeatherManager.Instance?.UpdateWeather(timestamp.season);
+        }
     }
 
     //Day an night cycle
@@ -91,9 +98,20 @@ public class TimeManager : MonoBehaviour
     }
     public void skipTimeStamp()
     {
-        GameTimestamp timer = new GameTimestamp(timestamp);
-        timer.updateDay();
-        timestamp = new GameTimestamp(timer);
+        // Clone and increment the day
+        GameTimestamp nextDay = new GameTimestamp(timestamp);
+        nextDay.updateDay();
+
+        // Update the weather FIRST for the next day
+        WeatherManager.Instance?.UpdateWeather(nextDay.season);
+
+        // Set the timestamp to the new day (06:00)
+        timestamp = new GameTimestamp(nextDay);
+
+        // Update the day tracker so weather doesn't re-trigger in Tick()
+        lastDayChecked = timestamp.day;
+
+        Debug.Log("Time skipped to day " + timestamp.day + ", weather updated.");
     }
 
     //Handling Listeners

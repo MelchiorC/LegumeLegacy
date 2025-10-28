@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using System;
+
 public class PlayerController : MonoBehaviour
 {
     const string IDLE = "Idle";
@@ -24,104 +25,139 @@ public class PlayerController : MonoBehaviour
 
     NavMeshAgent agent;
     Animator animator;
+    CharacterController characterController;
 
-    //Interaction Components
     PlayerInteraction playerInteraction;
 
     [Header("Movement")]
     [SerializeField] ParticleSystem clickEffect;
     [SerializeField] LayerMask clickableLayers;
+    [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float rotationSpeed = 8f;
 
-    float lookRotationSpeed = 8f;
+    Vector2 moveInput;
 
     private void Start()
     {
-        //Get interaction components
         playerInteraction = GetComponentInChildren<PlayerInteraction>();
-        if(Skipper == null) Debug.Log("Error");
+        if (Skipper == null) Debug.Log("Error");
     }
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        characterController = GetComponent<CharacterController>();
         input = new CustomActions();
         AssignInputs();
     }
     void AssignInputs()
     {
         input.Main.Move.performed += ctx => ClickToMove();
+        input.Main.WASD.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.Main.WASD.canceled += ctx => moveInput = Vector2.zero;
     }
 
     void ClickToMove()
     {
+        if (ONui) return;
+
         RaycastHit hit;
-        if (ONui == true)
-        {
-            return;
-        }
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100, clickableLayers))
         {
-            
+            if (!agent.enabled) agent.enabled = true; // Enable agent only if it was disabled
+            agent.ResetPath();
+            agent.isStopped = false;
             agent.destination = hit.point;
+
             if (clickEffect != null)
             {
-                
-                ParticleSystem effect = Instantiate(clickEffect, hit.point += new Vector3(0, 0.1f, 0), clickEffect.transform.rotation);
-
+                ParticleSystem effect = Instantiate(clickEffect, hit.point + new Vector3(0, 0.1f, 0), clickEffect.transform.rotation);
                 Destroy(effect.gameObject, effect.main.duration + effect.main.startLifetime.constantMax);
             }
         }
     }
 
-    void OnEnable()
-    {
-        input.Enable();
-    }
+    void OnEnable() { input.Enable(); }
+    void OnDisable() { input.Disable(); }
 
-    void OnDisable()
-    {
-        input.Disable();
-    }
     void Update()
     {
-        FaceTarget();
-        SetAnimations();
-
-        if (Input.GetKeyDown(KeyCode.B))
+        if (moveInput != Vector2.zero)
         {
-            UI.ToggleInventoryPanel();
-        }
-
-        // Runs the function that handles all the interaction
-        Interact();
-
-        // Update ONui flag based on active UI elements, but allow movement if only HaraUI is active
-        if (CompostUI.activeInHierarchy || Backpack.gameObject.activeSelf)
-        {
-            ONui = true;
+            if (agent.enabled && !agent.isStopped) agent.isStopped = true; // Only stop if agent is enabled
+            MoveWithWASD();
         }
         else
         {
-            ONui = false;  // HaraUI being active no longer sets ONui to true
+            if (agent.enabled && agent.isStopped) agent.isStopped = false; // Only start if agent is enabled
+            FaceTarget();
         }
+
+        SetAnimations();
+        HandleUIInteraction();
+        Interact();
+    }
+
+    void MoveWithWASD()
+    {
+        if (agent.enabled)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;  // Disable NavMeshAgent to allow manual movement
+        }
+
+        Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y).normalized;
+
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+        }
+
+        // Apply movement
+        moveDirection *= moveSpeed;
+
+        // Apply gravity only if not grounded
+        if (!characterController.isGrounded)
+        {
+            moveDirection.y -= 9.81f * Time.deltaTime;
+        }
+
+        characterController.Move(moveDirection * Time.deltaTime);
+    }
+
+    void FaceTarget()
+    {
+        if (agent.velocity != Vector3.zero)
+        {
+            Vector3 direction = (agent.destination - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        }
+    }
+
+    void SetAnimations()
+    {
+        if (moveInput != Vector2.zero || agent.velocity != Vector3.zero)
+        {
+            animator.Play(WALK);
+        }
+        else
+        {
+            animator.Play(IDLE);
+        }
+    }
+
+    void HandleUIInteraction()
+    {
+        if (Input.GetKeyDown(KeyCode.B)) UI.ToggleInventoryPanel();
+        ONui = CompostUI.activeInHierarchy || Backpack.activeSelf;
     }
 
     public void Interact()
     {
-        // Tool interaction
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            // Interact
-            playerInteraction.Interact();
+        if (Input.GetKeyDown(KeyCode.F)) playerInteraction.Interact();
 
-            // Close HaraUI if interacting
-            if (ONui)
-            {
-                HaraUI.gameObject.SetActive(false);
-            }
-        }
-
-        // Item Interaction
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (!ONui)
@@ -130,7 +166,6 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                ONui = false;
                 compost.gameObject.GetComponent<CompostShower>().HideUI();
             }
 
@@ -138,32 +173,6 @@ public class PlayerController : MonoBehaviour
             playerInteraction.ItemInteract();
         }
 
-        // Item Keep
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            playerInteraction.ItemKeep();
-        }
-    }
-    void FaceTarget()
-    {
-        if (agent.velocity != Vector3.zero)
-        {
-            Vector3 direction = (agent.destination - transform.position).normalized;
-            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * lookRotationSpeed);
-        }
-    }
-
-    //Play Animations
-    void SetAnimations()
-    {
-        if (agent.velocity == Vector3.zero)
-        {
-            animator.Play(IDLE);
-        }
-        else
-        {
-            animator.Play(WALK);
-        }
+        if (Input.GetKeyDown(KeyCode.G)) playerInteraction.ItemKeep();
     }
 }

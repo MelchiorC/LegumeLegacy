@@ -8,10 +8,7 @@ public class ItemSlotData
     public ItemData itemData;
     public int quantity;
 
-    // Maximum stack size
-    public const int maxStackSize = 2; // Example: max 99 items per slot
-
-    // Class Constructor
+    //Class Constructor
     public ItemSlotData(ItemData itemData, int quantity)
     {
         this.itemData = itemData;
@@ -19,7 +16,7 @@ public class ItemSlotData
         ValidateQuantity();
     }
 
-    // Automatically construct the class with the item data of quantity 1
+    //Automatically construct the class with the item data of quantity 1
     public ItemSlotData(ItemData itemData)
     {
         this.itemData = itemData;
@@ -27,30 +24,25 @@ public class ItemSlotData
         ValidateQuantity();
     }
 
-    // Clones the ItemSlotData
+    //Clones the ItemSlotData
     public ItemSlotData(ItemSlotData slotToClone)
     {
         itemData = slotToClone.itemData;
         quantity = slotToClone.quantity;
     }
 
-    // Check if the slot has room for more items
-    public bool HasRoomFor(int amount)
-    {
-        return quantity + amount <= maxStackSize;
-    }
+    //Stacking System
 
-    // Add a specified amount to the stack
-    public void AddQuantity(int amountToAdd)
-    {
-        quantity += amountToAdd;
-        ValidateQuantity();
-    }
-
-    // Shortcut function to add 1 to the stack
+    //Shortcut function to add 1 to the stack
     public void AddQuantity()
     {
         AddQuantity(1);
+    }
+
+    //Add a specified amount to the stack
+    public void AddQuantity(int amountToAdd)
+    {
+        quantity += amountToAdd;
     }
 
     public void Remove()
@@ -59,33 +51,29 @@ public class ItemSlotData
         ValidateQuantity();
     }
 
-    // Compares the item to see if it can be stacked
+    //Compares the item to see if it can be stacked
     public bool Stackable(ItemSlotData slotToCompare)
     {
-        return slotToCompare.itemData == itemData && quantity < maxStackSize;
+        return slotToCompare.itemData == itemData;
     }
 
-    // Do checks to see if the values make sense
+    //Do checks to see if the values make sense
     private void ValidateQuantity()
     {
-        if (quantity <= 0 || itemData == null)
+        if(quantity <= 0 || itemData == null)
         {
             Empty();
         }
-        else if (quantity > maxStackSize)
-        {
-            quantity = maxStackSize;
-        }
     }
 
-    // Empties out the item slot
+    //Empties out the item slot
     public void Empty()
     {
         itemData = null;
         quantity = 0;
     }
 
-    // Check if the slot is considered 'empty'
+    //Check if the slot is considered 'empty'
     public bool IsEmpty()
     {
         return itemData == null;
