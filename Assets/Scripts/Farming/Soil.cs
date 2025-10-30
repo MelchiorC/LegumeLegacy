@@ -307,7 +307,6 @@ public class Soil : MonoBehaviour, ITimeTracker
         }
     }
 
-    private int lastRainDay = -1;
     private bool wasRainingLastTick = false;
     public void ClockUpdate(GameTimestamp timestamp)
     {

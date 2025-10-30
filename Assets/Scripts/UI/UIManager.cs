@@ -53,6 +53,14 @@ public class UIManager : MonoBehaviour, ITimeTracker
     public GameObject Hara;
 
     public HaraImage change;
+
+    [Header("Dictionary Panels")]
+    [SerializeField] private GameObject uiControlsPanel;
+    [SerializeField] private GameObject uiMechanicsPanel;
+    [SerializeField] private GameObject backgroundPanel;
+    [SerializeField] private KeyCode dictionaryToggleKey = KeyCode.None;
+    private int currentPanelIndex = -1;
+
     public void Awake()
     {
         //If there is more than one instance, destroy the extra
@@ -75,6 +83,18 @@ public class UIManager : MonoBehaviour, ITimeTracker
 
         //Add UIManager to the list of objects TimeManager will notify when the time updates
         TimeManager.Instance.RegisterTracker(this);
+
+        // Initialize dictionary panels as hidden
+        InitializeDictionaryPanels();
+    }
+
+    private void Update()
+    {
+        // Handle dictionary panel toggle
+        if (dictionaryToggleKey != KeyCode.None && Input.GetKeyDown(dictionaryToggleKey))
+        {
+            ToggleDictionaryPanel();
+        }
     }
 
     public void TriggerYesNoPrompt(string message, System.Action onYesCallback)
@@ -235,5 +255,102 @@ public class UIManager : MonoBehaviour, ITimeTracker
         // Hide the UI elements and deactivate the Hara GameObject
         Hara.gameObject.SetActive(false);
     }
+
+    #region Dictionary Panels
+    private void InitializeDictionaryPanels()
+    {
+        // Both are hidden at start
+        if (uiControlsPanel != null)
+            uiControlsPanel.SetActive(false);
+
+        if (uiMechanicsPanel != null)
+            uiMechanicsPanel.SetActive(false);
+
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(false);
+    }
+
+    public void ToggleDictionaryPanel()
+    {
+        currentPanelIndex = (currentPanelIndex + 1) % 3;
+
+        switch (currentPanelIndex)
+        {
+            case 0: // Show Controls
+                ShowControls();
+                break;
+            case 1: // Show Mechanics
+                ShowMechanics();
+                break;
+            case 2: // Hide All
+                HideDictionaryPanels();
+                currentPanelIndex = -1;
+                break;
+        }
+    }
+
+    // Shows the Controls panel
+    public void ShowControls()
+    {
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(true);
+
+        if (uiControlsPanel != null)
+            uiControlsPanel.SetActive(true);
+
+        if (uiMechanicsPanel != null)
+            uiMechanicsPanel.SetActive(false);
+
+        currentPanelIndex = 0;
+    }
+
+    // Shows the Mechanics panel
+    public void ShowMechanics()
+    {
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(true);
+
+        if (uiControlsPanel != null)
+            uiControlsPanel.SetActive(false);
+
+        if (uiMechanicsPanel != null)
+            uiMechanicsPanel.SetActive(true);
+
+        currentPanelIndex = 1;
+    }
+
+    // Hides all dictionary panels
+    public void HideDictionaryPanels()
+    {
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(false);
+
+        if (uiControlsPanel != null)
+            uiControlsPanel.SetActive(false);
+
+        if (uiMechanicsPanel != null)
+            uiMechanicsPanel.SetActive(false);
+
+        currentPanelIndex = -1;
+    }
+
+    public void ToggleDictionaryVisibility()
+    {
+        if (backgroundPanel != null && backgroundPanel.activeSelf)
+        {
+            HideDictionaryPanels();
+        }
+        else
+        {
+            // Show the last active panel, or Controls if none was active
+            if (currentPanelIndex == 0)
+                ShowControls();
+            else if (currentPanelIndex == 1)
+                ShowMechanics();
+            else
+                ShowControls();
+        }
+    }
+    #endregion
 
 }

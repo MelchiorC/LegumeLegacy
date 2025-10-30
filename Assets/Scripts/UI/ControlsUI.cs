@@ -18,13 +18,13 @@ public class ControlsUI : MonoBehaviour
     public int fontSize = 7;
 
     public ControlEntry[] entries = new ControlEntry[] //Array to hold all the control texts
-    {   new ControlEntry { action = "Action", key = "Key" },
-        new ControlEntry { action = "Move", key = "WASD / Mouse" },
-        new ControlEntry { action = "Interaksi Mesin", key = "E" },
+    {   new ControlEntry { action = "Aksi", key = "Tombol" },
+        new ControlEntry { action = "Bergerak", key = "WASD / Mouse" },
+        new ControlEntry { action = "Interaksi", key = "E" },
         new ControlEntry { action = "Interaksi Tanaman", key = "F" },
-        new ControlEntry { action = "Inventory", key = "B" },
-        new ControlEntry { action = "Controls Info", key = "H" },
-        new ControlEntry { action = "Time Skip", key = "BLANK" },
+        new ControlEntry { action = "Tas", key = "B" },
+        new ControlEntry { action = "Info Kontrol", key = "H" },
+        new ControlEntry { action = "Lewati Waktu", key = "E dekat Rumah" },
     };
 
     void Start()
