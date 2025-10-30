@@ -20,17 +20,22 @@ public class UIManager : MonoBehaviour, ITimeTracker
     //The inventory panel
     public GameObject inventoryPanel;
 
+    //Slot prefabs for dynamic creation
+    public GameObject inventorySlotPrefab;
+    public Transform toolSlotContainer;
+    public Transform itemSlotContainer;
+
     //The tool equip slot UI on the inventory panel
     public HandInventorySlot toolHandSlot;
 
-    //The tool slot UI's
-    public InventorySlot[] toolSlots;
+    //The tool slot UI's (dynamic)
+    private List<InventorySlot> toolSlots = new List<InventorySlot>();
 
     //The item equip slot UI on the inventory panel
     public HandInventorySlot itemHandSlot;
 
-    //The item slot UI's
-    public InventorySlot[] itemSlots;
+    //The item slot UI's (dynamic)
+    private List<InventorySlot> itemSlots = new List<InventorySlot>();
 
     //Item Info box
     public Text itemNameText;
@@ -77,8 +82,10 @@ public class UIManager : MonoBehaviour, ITimeTracker
 
     private void Start()
     {
+        //Initialize UI slots to match inventory size
+        InitializeInventoryUI();
+        
         RenderInventory();
-        AssignSlotIndexes();
         RenderPlayerStats();
 
         //Add UIManager to the list of objects TimeManager will notify when the time updates
@@ -86,6 +93,85 @@ public class UIManager : MonoBehaviour, ITimeTracker
 
         // Initialize dictionary panels as hidden
         InitializeDictionaryPanels();
+    }
+
+    private void InitializeInventoryUI()
+    {
+        //Find and add existing tool slots from the container
+        if (toolSlotContainer != null)
+        {
+            InventorySlot[] existingToolSlots = toolSlotContainer.GetComponentsInChildren<InventorySlot>();
+            foreach (var slot in existingToolSlots)
+            {
+                if (slot.inventoryType == InventorySlot.InventoryType.Tool)
+                {
+                    toolSlots.Add(slot);
+                }
+            }
+            //Reassign indices
+            for (int i = 0; i < toolSlots.Count; i++)
+            {
+                toolSlots[i].AssignIndex(i);
+            }
+        }
+
+        //Find and add existing item slots from the container
+        if (itemSlotContainer != null)
+        {
+            InventorySlot[] existingItemSlots = itemSlotContainer.GetComponentsInChildren<InventorySlot>();
+            foreach (var slot in existingItemSlots)
+            {
+                if (slot.inventoryType == InventorySlot.InventoryType.Item)
+                {
+                    itemSlots.Add(slot);
+                }
+            }
+            //Reassign indices
+            for (int i = 0; i < itemSlots.Count; i++)
+            {
+                itemSlots[i].AssignIndex(i);
+            }
+        }
+
+        //Get inventory sizes from InventoryManager
+        ItemSlotData[] inventoryToolSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Tool);
+        ItemSlotData[] inventoryItemSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Item);
+
+        //Create additional tool slot UI elements if needed
+        if (inventoryToolSlots.Length > toolSlots.Count)
+        {
+            CreateInventorySlots(inventoryToolSlots.Length, InventorySlot.InventoryType.Tool);
+        }
+        
+        //Create additional item slot UI elements if needed
+        if (inventoryItemSlots.Length > itemSlots.Count)
+        {
+            CreateInventorySlots(inventoryItemSlots.Length, InventorySlot.InventoryType.Item);
+        }
+    }
+
+    private void CreateInventorySlots(int count, InventorySlot.InventoryType type)
+    {
+        List<InventorySlot> slotList = type == InventorySlot.InventoryType.Tool ? toolSlots : itemSlots;
+        Transform container = type == InventorySlot.InventoryType.Tool ? toolSlotContainer : itemSlotContainer;
+
+        //Create only the slots that don't exist yet
+        int currentCount = slotList.Count;
+        
+        for (int i = currentCount; i < count; i++)
+        {
+            GameObject slotObj = Instantiate(inventorySlotPrefab, container);
+            InventorySlot slot = slotObj.GetComponent<InventorySlot>();
+            slot.inventoryType = type;
+            slot.AssignIndex(i);
+            slotList.Add(slot);
+        }
+
+        //Force layout rebuild for proper positioning
+        if (container != null)
+        {
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(container.GetComponent<RectTransform>());
+        }
     }
 
     private void Update()
@@ -106,22 +192,23 @@ public class UIManager : MonoBehaviour, ITimeTracker
     }
 
     #region Inventory
-    //Iterate through the slot UI elements and assign its reference slot index
-    public void AssignSlotIndexes()
-    {
-        for (int i = 0; i < toolSlots.Length; i++)
-        {
-            toolSlots[i].AssignIndex(i);
-            itemSlots[i].AssignIndex(i);
-        }
-    }
-
     //Render the inventory screen to reflect the player's inventory
     public void RenderInventory()
     {
         //Get the respective slots to process
         ItemSlotData[] inventoryToolSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Tool);
         ItemSlotData[] inventoryItemSlots = InventoryManager.Instance.GetInventorySlots(InventorySlot.InventoryType.Item);
+        
+        //Check if we need to create more UI slots (inventory was expanded)
+        if (inventoryToolSlots.Length > toolSlots.Count)
+        {
+            CreateInventorySlots(inventoryToolSlots.Length, InventorySlot.InventoryType.Tool);
+        }
+        if (inventoryItemSlots.Length > itemSlots.Count)
+        {
+            CreateInventorySlots(inventoryItemSlots.Length, InventorySlot.InventoryType.Item);
+        }
+
         //Render the tool section
         RenderInventoryPanel(inventoryToolSlots, toolSlots);
 
@@ -160,9 +247,9 @@ public class UIManager : MonoBehaviour, ITimeTracker
     }
 
     //Iterate through a slot in a section and display the in the UI
-    void RenderInventoryPanel(ItemSlotData[] slots, InventorySlot[] uiSlots)
+    void RenderInventoryPanel(ItemSlotData[] slots, List<InventorySlot> uiSlots)
     {
-        for (int i = 0; i < uiSlots.Length; i++)
+        for (int i = 0; i < slots.Length && i < uiSlots.Count; i++)
         {
             //Display item accordingly
             uiSlots[i].Display(slots[i]);

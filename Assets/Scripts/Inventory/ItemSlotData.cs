@@ -8,6 +8,13 @@ public class ItemSlotData
     public ItemData itemData;
     public int quantity;
 
+    //Default constructor for empty slots
+    public ItemSlotData()
+    {
+        this.itemData = null;
+        this.quantity = 0;
+    }
+
     //Class Constructor
     public ItemSlotData(ItemData itemData, int quantity)
     {
