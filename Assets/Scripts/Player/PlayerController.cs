@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using System;
 
 public class PlayerController : MonoBehaviour
@@ -59,7 +60,28 @@ public class PlayerController : MonoBehaviour
 
     void ClickToMove()
     {
+        // Prevent movement if UI is active
         if (ONui) return;
+
+        // Prevent movement if clicking on interactive UI elements (buttons, panels, etc.)
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            // Check if we're actually clicking on an interactive UI element
+            PointerEventData pointerData = new PointerEventData(EventSystem.current);
+            pointerData.position = Input.mousePosition;
+            
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerData, results);
+            
+            // Only block if we hit an actual UI element with a graphic component
+            foreach (RaycastResult result in results)
+            {
+                if (result.gameObject.GetComponent<UnityEngine.UI.Graphic>() != null)
+                {
+                    return;
+                }
+            }
+        }
 
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100, clickableLayers))
@@ -151,7 +173,7 @@ public class PlayerController : MonoBehaviour
     void HandleUIInteraction()
     {
         if (Input.GetKeyDown(KeyCode.B)) UI.ToggleInventoryPanel();
-        ONui = CompostUI.activeInHierarchy || Backpack.activeSelf;
+        ONui = CompostUI.activeInHierarchy || Backpack.activeSelf || ShopUI.activeInHierarchy || ShippingBinUI.activeInHierarchy;
     }
 
     public void Interact()

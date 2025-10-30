@@ -21,7 +21,12 @@ public class Shop : InteractableObject
             InventoryManager.Instance.ShopToInventory(purchasedItem);
 
             // Report the quest progress for buying
+            Debug.Log($"[Shop] Reporting BuySeed quest: item={item.name}, quantity={quantity}");
             QuestManager.Instance.ReportAction(QuestData.QuestType.BuySeed, item.name, quantity);
+        }
+        else
+        {
+            Debug.Log($"[Shop] Not enough money. Need {totalCost}, have {PlayerStats.Money}");
         }
     }
 

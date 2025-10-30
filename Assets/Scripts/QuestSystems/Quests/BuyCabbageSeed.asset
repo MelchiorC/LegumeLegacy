@@ -15,5 +15,5 @@ MonoBehaviour:
   questName: Beli 3 bibit Kubis
   description: 
   questType: 4
-  targetCrop: Kubis
+  targetCrop: Bibit Kubis
   requiredAmount: 3

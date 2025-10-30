@@ -31,6 +31,9 @@ public class QuestManager : MonoBehaviour
     {
         if (currentQuest == null || currentQuest.isCompleted) return;
 
+        Debug.Log($"[QuestManager] ReportAction called: actionType={actionType}, cropType={cropType}, quantity={quantity}");
+        Debug.Log($"[QuestManager] Current quest: type={currentQuest.data.questType}, targetCrop={currentQuest.data.targetCrop}");
+
         if (currentQuest.data.questType == actionType)
         {
             currentQuest.AddProgress(cropType, quantity);

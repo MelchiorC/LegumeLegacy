@@ -19,9 +19,16 @@ public class Quest
     {
         if (isCompleted) return;
 
+        Debug.Log($"[Quest] AddProgress: Checking '{data.targetCrop}' == '{cropType}' ? {data.targetCrop == cropType}");
+
         if (data.targetCrop == cropType)
         {
             currentAmount += quantity;
+            Debug.Log($"[Quest] Progress added! New amount: {currentAmount}/{data.requiredAmount}");
+        }
+        else
+        {
+            Debug.Log($"[Quest] No match - expected '{data.targetCrop}', got '{cropType}'");
         }
     }
 }
