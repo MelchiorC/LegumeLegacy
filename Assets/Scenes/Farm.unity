@@ -2685,6 +2685,7 @@ RectTransform:
   - {fileID: 84810592}
   - {fileID: 1179329850}
   - {fileID: 1960815486}
+  - {fileID: 405572741}
   m_Father: {fileID: 1850912727}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8914,6 +8915,66 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b97a5f169385a6a4d82bfd8e58fadb1c, type: 3}
+--- !u!1 &405572740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 405572741}
+  - component: {fileID: 405572742}
+  m_Layer: 0
+  m_Name: ItemPickupLayout
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &405572741
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405572740}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.9230365, y: 0.9230365, z: 0.9230365}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 135756473}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -642.3065, y: -91.907234}
+  m_SizeDelta: {x: 341.674, y: 199.1375}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &405572742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405572740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 300, y: 195.9}
+  m_Spacing: {x: 0, y: -120}
+  m_Constraint: 0
+  m_ConstraintCount: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -47129,6 +47190,7 @@ GameObject:
   - component: {fileID: 1850912735}
   - component: {fileID: 1850912732}
   - component: {fileID: 1850912733}
+  - component: {fileID: 1850912736}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -47358,6 +47420,22 @@ MonoBehaviour:
   maxFogVariation: 0.02
   startFogHour: 4
   endFogHour: 7
+--- !u!114 &1850912736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850912725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6e5cac361f67d42b6d11038b393119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemPickupBanner
+  entryContainer: {fileID: 405572741}
+  entryPrefab: {fileID: 3997546492231017852, guid: c25073124ca97474586655d1fdeebf1c,
+    type: 3}
+  maxVisibleEntries: 5
 --- !u!1 &1851266634
 GameObject:
   m_ObjectHideFlags: 0

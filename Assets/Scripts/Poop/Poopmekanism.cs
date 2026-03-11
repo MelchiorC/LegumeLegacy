@@ -24,6 +24,9 @@ public class Poopmekanism : MonoBehaviour
             Hari1 = TimeManager.Instance.GetGameTimestamp();
             InventoryManager.Instance.EquipHandSlot(Poop);
             InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);
+
+            if (Poop != null && ItemPickupBanner.Instance != null)
+                ItemPickupBanner.Instance.ShowPickup(Poop, 1);
         }
     }
 

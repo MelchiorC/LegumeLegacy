@@ -25,6 +25,9 @@ public class LeafMechanism : MonoBehaviour
             FirstDay = TimeManager.Instance.GetGameTimestamp();
             InventoryManager.Instance.EquipHandSlot(Leaf);
             InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);
+
+            if (Leaf != null && ItemPickupBanner.Instance != null)
+                ItemPickupBanner.Instance.ShowPickup(Leaf, 1);
         }
     }
 

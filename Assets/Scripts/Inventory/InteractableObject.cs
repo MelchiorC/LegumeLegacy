@@ -20,6 +20,13 @@ public class InteractableObject : MonoBehaviour
             InventoryManager.Instance.HandToInventory(InventorySlot.InventoryType.Item);
         }
 
+        // Show pickup banner notifications
+        int totalPickedUp = boost + 1;
+        if (item != null && ItemPickupBanner.Instance != null)
+            ItemPickupBanner.Instance.ShowPickup(item, totalPickedUp);
+        if (waste != null && ItemPickupBanner.Instance != null)
+            ItemPickupBanner.Instance.ShowPickup(waste, totalPickedUp);
+
         // Report Harvest Quest progress here
         QuestManager.Instance.ReportAction(QuestData.QuestType.Harvest, cropType);
 
