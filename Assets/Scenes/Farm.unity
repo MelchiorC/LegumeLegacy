@@ -32787,7 +32787,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1179329850
 RectTransform:
   m_ObjectHideFlags: 0
@@ -47215,14 +47215,14 @@ MonoBehaviour:
     quantity: 1
   - itemData: {fileID: 11400000, guid: 97f51c9d1f7b80544b1d9e0dadb33207, type: 2}
     quantity: 1
-  - itemData: {fileID: 11400000, guid: adbea69b3ea9a5d42bd83983ab4da297, type: 2}
-    quantity: 1
+  - itemData: {fileID: 11400000, guid: 1d233e42e579866419434a185f6c13c2, type: 2}
+    quantity: 3
   - itemData: {fileID: 11400000, guid: 601ab5b6b581f2d4cbb256bdb6a9635c, type: 2}
     quantity: 3
   - itemData: {fileID: 11400000, guid: 57d8dbd8cd0f51645b313bb92cc459a8, type: 2}
     quantity: 3
-  - itemData: {fileID: 0}
-    quantity: 1
+  - itemData: {fileID: 11400000, guid: caaa11f2ab6a73142ac2302f281462fb, type: 2}
+    quantity: 3
   - itemData: {fileID: 0}
     quantity: 1
   - itemData: {fileID: 0}

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -180,7 +181,7 @@ public class CropBehaviour : MonoBehaviour
                 harvestable.SetActive(true);
                 harvestable.transform.parent = null;
 
-                if (seedToGrow.seedType == "Legume")
+                if (IsRotationCrop(seedToGrow))
                 {
                     planted.status.LandRotation = true;
                 }
@@ -192,5 +193,16 @@ public class CropBehaviour : MonoBehaviour
         }
 
         cropState = stateToSwitch;
+    }
+
+    private bool IsRotationCrop(SeedData seed)
+    {
+        if (seed == null || string.IsNullOrEmpty(seed.seedType))
+        {
+            return false;
+        }
+
+        return seed.seedType.Equals("Legume", StringComparison.OrdinalIgnoreCase)
+            || seed.seedType.Equals("Pueraria Javanica", StringComparison.OrdinalIgnoreCase);
     }
 }

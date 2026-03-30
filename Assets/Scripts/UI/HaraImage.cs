@@ -58,33 +58,30 @@ public class HaraImage : MonoBehaviour
         }
     }
 
+    public void PestStatus(bool hasPest)
+    {
+        Image img = Stick.GetComponent<Image>();
+        TMP_Text text = StickText.GetComponent<TMP_Text>();
+
+        img.gameObject.SetActive(true);
+        text.gameObject.SetActive(true);
+        StickBox.gameObject.SetActive(true);
+
+        if (hasPest)
+        {
+            img.sprite = NoStick;
+            text.text = "Peringatan: Hama menyerang tanaman";
+        }
+        else
+        {
+            img.sprite = YesStick;
+            text.text = "Status hama aman";
+        }
+    }
+
+    // Backward compatibility for existing callsites.
     public void StickYes(bool stick, bool treli)
     {
-
-            Image img = Stick.GetComponent<Image>();
-            TMP_Text text = StickText.GetComponent<TMP_Text>();
-            if (treli == false)
-            {
-                img.gameObject.SetActive(false);
-                text.gameObject.SetActive(false);
-                StickBox.gameObject.SetActive(false);
-            }
-            else
-            {
-                img.gameObject.SetActive(true);
-                text.gameObject.SetActive(true);
-                StickBox.gameObject.SetActive(true);
-                if (stick == true)
-                {
-                    img.sprite = YesStick;
-                    text.text = "Tanaman sudah diberi penyangga";
-                }
-                else
-                {
-                    img.sprite = NoStick;
-                    text.text = "Tanaman belum diberi penyangga";
-                }
-            }
-        
+        PestStatus(stick);
     }
 }

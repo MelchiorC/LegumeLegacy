@@ -1,8 +1,6 @@
 using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Soil : MonoBehaviour, ITimeTracker
@@ -38,6 +36,14 @@ public class Soil : MonoBehaviour, ITimeTracker
     [Header("Crops")]
     //The crop prefab to instantiate
     public GameObject cropPrefab;
+
+    [Header("Pest Control")]
+    [Range(0f, 1f)]
+    [SerializeField] private float dailyPestAttackChance = 0.5f;
+    [Range(0f, 1f)]
+    [SerializeField] private float cropRotationPestMultiplier = 0.5f;
+    [SerializeField] private bool hasPests;
+    public bool HasPests => hasPests;
 
     //The crop currently planted on the land
     CropBehaviour cropPlanted = null;
@@ -152,13 +158,11 @@ public class Soil : MonoBehaviour, ITimeTracker
                 // Check if the planted crop requires a trellis
                 if (DatabaseBibit.Instance.CheckTreli(cropPlanted.seedToGrow))
                 {
-                    // Show UI with trellis option enabled
-                    UIManager.Instance.OpenUI(status.Water, status.Compost, status.Stick, true);
+                    UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
                 }
                 else
                 {
-                    // Show UI without trellis option
-                    UIManager.Instance.OpenUI(status.Water, status.Compost, status.Stick, false);
+                    UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
                 }
             }
             
@@ -218,6 +222,7 @@ public class Soil : MonoBehaviour, ITimeTracker
                     if(cropPlanted != null)
                     {
                         Destroy(cropPlanted.gameObject);
+                        hasPests = false;
                         SwitchLandStatus(LandStatus.Default);
 
                         break;
@@ -258,7 +263,12 @@ public class Soil : MonoBehaviour, ITimeTracker
                 case EquipmentData.ToolType.Sickle:
                     SwitchLandStatus(LandStatus.Harvested);
                     Destroy(cropPlanted.gameObject);
+                    hasPests = false;
                     SwitchLandStatus(LandStatus.Default);
+                    break;
+
+                case EquipmentData.ToolType.Pesticide:
+                    ControlPests();
                     break;
 
                 case EquipmentData.ToolType.PH:
@@ -266,16 +276,16 @@ public class Soil : MonoBehaviour, ITimeTracker
                     {
                         if (DatabaseBibit.Instance.CheckTreli(cropPlanted.seedToGrow))
                         {
-                            UIManager.Instance.OpenUI(status.Water, status.Compost, status.Stick, true);
+                            UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
                         }
                         else
                         {
-                            UIManager.Instance.OpenUI(status.Water, status.Compost, status.Stick, false);
+                            UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
                         }
                     }
                     else
                     {
-                        UIManager.Instance.OpenUI(status.Water, status.Compost, status.Stick, false);
+                        UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
                     
                     }
                         
@@ -301,6 +311,7 @@ public class Soil : MonoBehaviour, ITimeTracker
 
             //Plant it with the seed's information
             cropPlanted.Plant(seedTool, this);
+            hasPests = false;
 
             //Consume the item
             InventoryManager.Instance.ConsumeItem(InventoryManager.Instance.GetEquippedSlot(InventorySlot.InventoryType.Tool));
@@ -347,13 +358,61 @@ public class Soil : MonoBehaviour, ITimeTracker
             {
                 if (cropPlanted != null)
                 {
-                    cropPlanted.Grow();
+                    TryApplyPestAttack();
+
+                    if (!hasPests)
+                    {
+                        cropPlanted.Grow();
+                    }
+                    else
+                    {
+                        Debug.Log("[PestControl] Crop growth paused because pests are attacking. Use pesticide to control pests.");
+                    }
                 }
                 SwitchLandStatus(LandStatus.Soil);
                 status.Water = false;
             }
         }
 
+    }
+
+    private void TryApplyPestAttack()
+    {
+        if (cropPlanted == null || hasPests)
+        {
+            return;
+        }
+
+        float chance = dailyPestAttackChance;
+
+        // Crop rotation with Pueraria/legume lowers daily pest chance.
+        if (status.LandRotation)
+        {
+            chance *= cropRotationPestMultiplier;
+        }
+
+        if (Random.value <= chance)
+        {
+            hasPests = true;
+            Debug.Log($"[PestControl] Pests attacked this crop. Daily chance used: {chance:P0}");
+        }
+    }
+
+    private void ControlPests()
+    {
+        if (cropPlanted == null)
+        {
+            return;
+        }
+
+        if (!hasPests)
+        {
+            Debug.Log("[PestControl] No pests to control on this soil.");
+            return;
+        }
+
+        hasPests = false;
+        Debug.Log("[PestControl] Pests controlled successfully.");
     }
 
     
