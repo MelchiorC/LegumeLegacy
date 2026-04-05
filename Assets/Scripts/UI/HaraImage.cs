@@ -58,7 +58,7 @@ public class HaraImage : MonoBehaviour
         }
     }
 
-    public void PestStatus(bool hasPest)
+    public void PestStatus(Soil.PestType pestType)
     {
         Image img = Stick.GetComponent<Image>();
         TMP_Text text = StickText.GetComponent<TMP_Text>();
@@ -67,21 +67,30 @@ public class HaraImage : MonoBehaviour
         text.gameObject.SetActive(true);
         StickBox.gameObject.SetActive(true);
 
-        if (hasPest)
+        switch (pestType)
         {
-            img.sprite = NoStick;
-            text.text = "Peringatan: Hama menyerang tanaman";
-        }
-        else
-        {
-            img.sprite = YesStick;
-            text.text = "Status hama aman";
+            case Soil.PestType.None:
+                img.sprite = YesStick;
+                text.text = "Status hama aman";
+                break;
+            case Soil.PestType.PathogenicFungi:
+                img.sprite = NoStick;
+                text.text = "Peringatan: Jamur patogen menyerang tanaman. Gunakan pesticide.";
+                break;
+            case Soil.PestType.Aphids:
+                img.sprite = NoStick;
+                text.text = "Peringatan: Kutu daun menyerang tanaman. Gunakan ladybug.";
+                break;
+            case Soil.PestType.Armyworm:
+                img.sprite = NoStick;
+                text.text = "Peringatan: Ulat grayak menyerang tanaman. Gunakan pesticide.";
+                break;
         }
     }
 
     // Backward compatibility for existing callsites.
     public void StickYes(bool stick, bool treli)
     {
-        PestStatus(stick);
+        PestStatus(stick ? Soil.PestType.PathogenicFungi : Soil.PestType.None);
     }
 }

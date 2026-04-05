@@ -329,11 +329,11 @@ public class UIManager : MonoBehaviour, ITimeTracker
         shopListingManager.RenderShop(shopItems);
     }
 
-    public void OpenUI(bool water, bool compost, bool hasPest)
+    public void OpenUI(bool water, bool compost, Soil.PestType pestType)
     {
         change.IsItWatered(water);
         change.CompostYes(compost);
-        change.PestStatus(hasPest);
+        change.PestStatus(pestType);
         Hara.gameObject.SetActive(true);
     }
 

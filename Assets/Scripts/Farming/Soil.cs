@@ -9,6 +9,11 @@ public class Soil : MonoBehaviour, ITimeTracker
     {
         Soil, Compost,Curved,CurvedCompost,Watered, Growing, Harvested, Default, Stick
     }
+
+    public enum PestType
+    {
+        None, PathogenicFungi, Aphids, Armyworm
+    }
     
     public LandStatus landStatus;
     public Stat status;
@@ -39,11 +44,23 @@ public class Soil : MonoBehaviour, ITimeTracker
 
     [Header("Pest Control")]
     [Range(0f, 1f)]
+    // There is a 50% base chance each crop-day that pests will attack.
     [SerializeField] private float dailyPestAttackChance = 0.5f;
     [Range(0f, 1f)]
-    [SerializeField] private float cropRotationPestMultiplier = 0.5f;
-    [SerializeField] private bool hasPests;
-    public bool HasPests => hasPests;
+
+    // Crop rotation lowers the pest attack chance to 70% of the normal value, so pests become less likely.
+    [SerializeField] private float cropRotationPestMultiplier = 0.7f;
+    [Range(0.1f, 5f)]
+
+    // Pathogenic fungi are more likely to appear during the rainy season, so their chance is multiplied by 2x.
+    [SerializeField] private float rainySeasonFungiMultiplier = 2f;
+    [Range(0.1f, 5f)]
+
+    // Pathogenic fungi are less likely to appear during the dry season, so their chance is multiplied by 0.5x.
+    [SerializeField] private float summerSeasonFungiMultiplier = 0.5f;
+    [SerializeField] private PestType activePest = PestType.None;
+    public PestType ActivePest => activePest;
+    public bool HasPests => activePest != PestType.None;
 
     //The crop currently planted on the land
     CropBehaviour cropPlanted = null;
@@ -158,11 +175,11 @@ public class Soil : MonoBehaviour, ITimeTracker
                 // Check if the planted crop requires a trellis
                 if (DatabaseBibit.Instance.CheckTreli(cropPlanted.seedToGrow))
                 {
-                    UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
+                    UIManager.Instance.OpenUI(status.Water, status.Compost, activePest);
                 }
                 else
                 {
-                    UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
+                    UIManager.Instance.OpenUI(status.Water, status.Compost, activePest);
                 }
             }
             
@@ -222,7 +239,7 @@ public class Soil : MonoBehaviour, ITimeTracker
                     if(cropPlanted != null)
                     {
                         Destroy(cropPlanted.gameObject);
-                        hasPests = false;
+                        activePest = PestType.None;
                         SwitchLandStatus(LandStatus.Default);
 
                         break;
@@ -263,12 +280,16 @@ public class Soil : MonoBehaviour, ITimeTracker
                 case EquipmentData.ToolType.Sickle:
                     SwitchLandStatus(LandStatus.Harvested);
                     Destroy(cropPlanted.gameObject);
-                    hasPests = false;
+                    activePest = PestType.None;
                     SwitchLandStatus(LandStatus.Default);
                     break;
 
                 case EquipmentData.ToolType.Pesticide:
-                    ControlPests();
+                    ControlPests(EquipmentData.ToolType.Pesticide);
+                    break;
+
+                case EquipmentData.ToolType.Ladybug:
+                    ControlPests(EquipmentData.ToolType.Ladybug);
                     break;
 
                 case EquipmentData.ToolType.PH:
@@ -276,16 +297,16 @@ public class Soil : MonoBehaviour, ITimeTracker
                     {
                         if (DatabaseBibit.Instance.CheckTreli(cropPlanted.seedToGrow))
                         {
-                            UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
+                            UIManager.Instance.OpenUI(status.Water, status.Compost, activePest);
                         }
                         else
                         {
-                            UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
+                            UIManager.Instance.OpenUI(status.Water, status.Compost, activePest);
                         }
                     }
                     else
                     {
-                        UIManager.Instance.OpenUI(status.Water, status.Compost, hasPests);
+                        UIManager.Instance.OpenUI(status.Water, status.Compost, activePest);
                     
                     }
                         
@@ -311,7 +332,7 @@ public class Soil : MonoBehaviour, ITimeTracker
 
             //Plant it with the seed's information
             cropPlanted.Plant(seedTool, this);
-            hasPests = false;
+            activePest = PestType.None;
 
             //Consume the item
             InventoryManager.Instance.ConsumeItem(InventoryManager.Instance.GetEquippedSlot(InventorySlot.InventoryType.Tool));
@@ -358,9 +379,9 @@ public class Soil : MonoBehaviour, ITimeTracker
             {
                 if (cropPlanted != null)
                 {
-                    TryApplyPestAttack();
+                    TryApplyPestAttack(timestamp);
 
-                    if (!hasPests)
+                    if (!HasPests)
                     {
                         cropPlanted.Grow();
                     }
@@ -376,9 +397,9 @@ public class Soil : MonoBehaviour, ITimeTracker
 
     }
 
-    private void TryApplyPestAttack()
+    private void TryApplyPestAttack(GameTimestamp currentTimestamp)
     {
-        if (cropPlanted == null || hasPests)
+        if (cropPlanted == null || HasPests)
         {
             return;
         }
@@ -393,26 +414,71 @@ public class Soil : MonoBehaviour, ITimeTracker
 
         if (Random.value <= chance)
         {
-            hasPests = true;
-            Debug.Log($"[PestControl] Pests attacked this crop. Daily chance used: {chance:P0}");
+            activePest = RollPestType(currentTimestamp != null ? currentTimestamp.season : GameTimestamp.Season.Panas);
+            Debug.Log($"[PestControl] {activePest} attacked this crop. Daily chance used: {chance:P0}");
         }
     }
 
-    private void ControlPests()
+    private PestType RollPestType(GameTimestamp.Season currentSeason)
+    {
+        float fungiWeight = 1f;
+        if (currentSeason == GameTimestamp.Season.Hujan)
+        {
+            fungiWeight *= rainySeasonFungiMultiplier;
+        }
+        else
+        {
+            fungiWeight *= summerSeasonFungiMultiplier;
+        }
+
+        float aphidsWeight = 1f;
+        float armywormWeight = 1f;
+
+        float totalWeight = fungiWeight + aphidsWeight + armywormWeight;
+        float roll = Random.value * totalWeight;
+
+        if (roll < fungiWeight)
+        {
+            return PestType.PathogenicFungi;
+        }
+
+        roll -= fungiWeight;
+        if (roll < aphidsWeight)
+        {
+            return PestType.Aphids;
+        }
+
+        return PestType.Armyworm;
+    }
+
+    private void ControlPests(EquipmentData.ToolType toolType)
     {
         if (cropPlanted == null)
         {
             return;
         }
 
-        if (!hasPests)
+        if (!HasPests)
         {
             Debug.Log("[PestControl] No pests to control on this soil.");
             return;
         }
 
-        hasPests = false;
-        Debug.Log("[PestControl] Pests controlled successfully.");
+        if (toolType == EquipmentData.ToolType.Pesticide && (activePest == PestType.PathogenicFungi || activePest == PestType.Armyworm))
+        {
+            activePest = PestType.None;
+            Debug.Log("[PestControl] Pests controlled successfully with pesticide.");
+            return;
+        }
+
+        if (toolType == EquipmentData.ToolType.Ladybug && activePest == PestType.Aphids)
+        {
+            activePest = PestType.None;
+            Debug.Log("[PestControl] Aphids controlled successfully with ladybugs.");
+            return;
+        }
+
+        Debug.Log($"[PestControl] {toolType} is not effective against {activePest}.");
     }
 
     
