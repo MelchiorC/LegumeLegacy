@@ -12,7 +12,13 @@ public class Soil : MonoBehaviour, ITimeTracker
 
     public enum PestType
     {
-        None, PathogenicFungi, Aphids, Armyworm
+        None,
+        PathogenicFungi,
+        Aphids,
+        Armyworm,
+        Cutworm,
+        CabbageWorm,
+        SpiderMites
     }
     
     public LandStatus landStatus;
@@ -44,20 +50,20 @@ public class Soil : MonoBehaviour, ITimeTracker
 
     [Header("Pest Control")]
     [Range(0f, 1f)]
-    // There is a 50% base chance each crop-day that pests will attack.
-    [SerializeField] private float dailyPestAttackChance = 0.5f;
+    // There is a 30% base chance each crop-day that pests will attack.
+    [SerializeField] private float dailyPestAttackChance = 0.3f;
     [Range(0f, 1f)]
 
-    // Crop rotation lowers the pest attack chance to 70% of the normal value, so pests become less likely.
-    [SerializeField] private float cropRotationPestMultiplier = 0.7f;
+    // Crop rotation lowers the pest attack chance to 60% of the normal value, so pests become less likely.
+    [SerializeField] private float cropRotationPestMultiplier = 0.6f;
     [Range(0.1f, 5f)]
 
-    // Pathogenic fungi are more likely to appear during the rainy season, so their chance is multiplied by 2x.
-    [SerializeField] private float rainySeasonFungiMultiplier = 2f;
+    // Pathogenic fungi are more likely to appear during the rainy season, so their chance is multiplied by 3.0x.
+    [SerializeField] private float rainySeasonFungiMultiplier = 3.0f;
     [Range(0.1f, 5f)]
 
-    // Pathogenic fungi are less likely to appear during the dry season, so their chance is multiplied by 0.5x.
-    [SerializeField] private float summerSeasonFungiMultiplier = 0.5f;
+    // Pathogenic fungi are less likely to appear during the dry season, so their chance is multiplied by 0.2x.
+    [SerializeField] private float summerSeasonFungiMultiplier = 0.2f;
     [SerializeField] private PestType activePest = PestType.None;
     public PestType ActivePest => activePest;
     public bool HasPests => activePest != PestType.None;
@@ -421,34 +427,124 @@ public class Soil : MonoBehaviour, ITimeTracker
 
     private PestType RollPestType(GameTimestamp.Season currentSeason)
     {
-        float fungiWeight = 1f;
-        if (currentSeason == GameTimestamp.Season.Hujan)
+        List<PestType> pestPool = GetPestPoolForCurrentCrop();
+        if (pestPool.Count == 0)
         {
-            fungiWeight *= rainySeasonFungiMultiplier;
-        }
-        else
-        {
-            fungiWeight *= summerSeasonFungiMultiplier;
+            return PestType.None;
         }
 
-        float aphidsWeight = 1f;
-        float armywormWeight = 1f;
+        float totalWeight = 0f;
+        List<float> weights = new List<float>(pestPool.Count);
+        foreach (PestType pest in pestPool)
+        {
+            float weight = 1f;
+            if (pest == PestType.PathogenicFungi)
+            {
+                if (currentSeason == GameTimestamp.Season.Hujan)
+                {
+                    weight *= rainySeasonFungiMultiplier;
+                }
+                else
+                {
+                    weight *= summerSeasonFungiMultiplier;
+                }
+            }
 
-        float totalWeight = fungiWeight + aphidsWeight + armywormWeight;
+            weights.Add(weight);
+            totalWeight += weight;
+        }
+
         float roll = Random.value * totalWeight;
-
-        if (roll < fungiWeight)
+        for (int i = 0; i < pestPool.Count; i++)
         {
-            return PestType.PathogenicFungi;
+            if (roll < weights[i])
+            {
+                return pestPool[i];
+            }
+
+            roll -= weights[i];
         }
 
-        roll -= fungiWeight;
-        if (roll < aphidsWeight)
+        return pestPool[pestPool.Count - 1];
+    }
+
+    private List<PestType> GetPestPoolForCurrentCrop()
+    {
+        List<PestType> pests = new List<PestType>();
+        if (cropPlanted == null || cropPlanted.seedToGrow == null)
         {
-            return PestType.Aphids;
+            return pests;
         }
 
-        return PestType.Armyworm;
+        // Jagung: ulat grayak, ulat tanah.
+        if (IsCropMatch("jagung"))
+        {
+            pests.Add(PestType.Armyworm);
+            pests.Add(PestType.Cutworm);
+            return pests;
+        }
+
+        // Kubis: ulat kubis, kutu daun.
+        if (IsCropMatch("kubis"))
+        {
+            pests.Add(PestType.CabbageWorm);
+            pests.Add(PestType.Aphids);
+            return pests;
+        }
+
+        // Kacang panjang: kutu daun, kutu laba-laba, ulat grayak.
+        if (IsCropMatch("kacang panjang", "legume"))
+        {
+            pests.Add(PestType.Aphids);
+            pests.Add(PestType.SpiderMites);
+            pests.Add(PestType.Armyworm);
+            return pests;
+        }
+
+        // Kentang: kutu daun, ulat tanah, kutu laba-laba, jamur patogen.
+        if (IsCropMatch("kentang"))
+        {
+            pests.Add(PestType.Aphids);
+            pests.Add(PestType.Cutworm);
+            pests.Add(PestType.SpiderMites);
+            pests.Add(PestType.PathogenicFungi);
+            return pests;
+        }
+
+        // Pueraria/Puera: kutu daun.
+        if (IsCropMatch("pueraria", "puera"))
+        {
+            pests.Add(PestType.Aphids);
+            return pests;
+        }
+
+        // Fallback for unknown crops.
+        pests.Add(PestType.PathogenicFungi);
+        pests.Add(PestType.Aphids);
+        pests.Add(PestType.Armyworm);
+        return pests;
+    }
+
+    private bool IsCropMatch(params string[] keywords)
+    {
+        if (cropPlanted == null || cropPlanted.seedToGrow == null)
+        {
+            return false;
+        }
+
+        string seedType = cropPlanted.seedToGrow.seedType != null ? cropPlanted.seedToGrow.seedType.ToLowerInvariant() : string.Empty;
+        string seedName = cropPlanted.seedToGrow.name != null ? cropPlanted.seedToGrow.name.ToLowerInvariant() : string.Empty;
+
+        foreach (string keyword in keywords)
+        {
+            string key = keyword.ToLowerInvariant();
+            if (seedType.Contains(key) || seedName.Contains(key))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ControlPests(EquipmentData.ToolType toolType)
@@ -471,10 +567,24 @@ public class Soil : MonoBehaviour, ITimeTracker
             return;
         }
 
+        if (toolType == EquipmentData.ToolType.Pesticide && (activePest == PestType.Cutworm || activePest == PestType.CabbageWorm))
+        {
+            activePest = PestType.None;
+            Debug.Log("[PestControl] Worm pests controlled successfully with pesticide.");
+            return;
+        }
+
         if (toolType == EquipmentData.ToolType.Ladybug && activePest == PestType.Aphids)
         {
             activePest = PestType.None;
             Debug.Log("[PestControl] Aphids controlled successfully with ladybugs.");
+            return;
+        }
+
+        if (toolType == EquipmentData.ToolType.Ladybug && activePest == PestType.SpiderMites)
+        {
+            activePest = PestType.None;
+            Debug.Log("[PestControl] Spider mites controlled successfully with ladybugs.");
             return;
         }
 

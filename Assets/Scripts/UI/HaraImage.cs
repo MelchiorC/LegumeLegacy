@@ -19,6 +19,12 @@ public class HaraImage : MonoBehaviour
     public GameObject Stick;
     public Sprite NoStick;
     public Sprite YesStick;
+    public Sprite PathogenicFungiIcon;
+    public Sprite AphidsIcon;
+    public Sprite ArmywormIcon;
+    public Sprite CutwormIcon;
+    public Sprite CabbageWormIcon;
+    public Sprite SpiderMitesIcon;
     public GameObject StickText;
     public GameObject StickBox;
 
@@ -71,19 +77,31 @@ public class HaraImage : MonoBehaviour
         {
             case Soil.PestType.None:
                 img.sprite = YesStick;
-                text.text = "Status hama aman";
+                text.text = "Tanaman Sehat";
                 break;
             case Soil.PestType.PathogenicFungi:
-                img.sprite = NoStick;
-                text.text = "Peringatan: Jamur patogen menyerang tanaman. Gunakan pesticide.";
+                img.sprite = PathogenicFungiIcon;
+                text.text = "Jamur patogen menyerang tanaman.";
                 break;
             case Soil.PestType.Aphids:
-                img.sprite = NoStick;
-                text.text = "Peringatan: Kutu daun menyerang tanaman. Gunakan ladybug.";
+                img.sprite = AphidsIcon;
+                text.text = "Kutu daun menyerang tanaman";
                 break;
             case Soil.PestType.Armyworm:
-                img.sprite = NoStick;
-                text.text = "Peringatan: Ulat grayak menyerang tanaman. Gunakan pesticide.";
+                img.sprite = ArmywormIcon;
+                text.text = "Ulat grayak menyerang tanaman";
+                break;
+            case Soil.PestType.Cutworm:
+                img.sprite = CutwormIcon;
+                text.text = "Ulat tanah menyerang tanaman";
+                break;
+            case Soil.PestType.CabbageWorm:
+                img.sprite = CabbageWormIcon;
+                text.text = "Ulat kubis menyerang tanaman";
+                break;
+            case Soil.PestType.SpiderMites:
+                img.sprite = SpiderMitesIcon;
+                text.text = "Kutu laba-laba menyerang tanaman";
                 break;
         }
     }

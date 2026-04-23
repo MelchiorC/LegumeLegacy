@@ -20,6 +20,18 @@ public class CompostShower : MonoBehaviour
     public Sprite defaultSprite;
     [SerializeField]
     public ItemData compost;
+    public ItemData pupukResult;
+    public ItemData pestisidaNabatiResult;
+
+    [Header("Compost Recipe")]
+    public ItemData sisaTanaman;
+    public ItemData kotoranHewan;
+
+    [Header("Pestisida Nabati Recipe")]
+    public ItemData cabai;
+    public ItemData bawangPutih;
+    public ItemData emptyBottle;
+
     public GameObject draggablePrefab;
     public List<ItemData> recipe;
     public static CompostShower instance;
@@ -31,11 +43,18 @@ public class CompostShower : MonoBehaviour
         {
             instance = this;
         }
+
+        // Keep compatibility with old inspector setup that used only `compost`.
+        if (pupukResult == null)
+        {
+            pupukResult = compost;
+        }
     }
     public Boolean CompostUI()
     {
         recipe = new List<ItemData>();
         spawnedDraggable = new List<GameObject>();
+        craftable = new List<ItemSlotData>();
         if (OnTrigger == true)
         {
             playerInventory = new List<ItemSlotData>();
@@ -60,40 +79,11 @@ public class CompostShower : MonoBehaviour
                 }
             }
 
-            int slots = UI.transform.Find("Inven").childCount;
-             k = 0;
-            for (int i = 0; i < playerInventory.Count; i++)
-            {
-            
-                if(k < UI.transform.Find("Inven").childCount)
-                {
-                   // UI.transform.Find("Inven").GetChild(k).GetComponent<Image>().sprite = playerInventory[i].thumbnail;
-                   
-                    GameObject g = Instantiate(draggablePrefab,UI.transform.Find("Inven"));
-                    g.transform.position = UI.transform.Find("Inven").GetChild(k).transform.position;
-                    g.GetComponent<InventorySlot>().Display(playerInventory[i]);
-                    g.GetComponent<DraggableInventoryCompost>().originSnappingPosition = UI.transform.Find("Inven").GetChild(k).transform.position;
-                    spawnedDraggable.Add(g);
-                    k++;
-                }
-              
-               /* bool found = false;
-                for (int j = 0; j < ints.Count; j++)
-                {
-                    if (i == ints[j])
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == false)
-                {
-                   
-                }*/
-            }
+            RebuildBagDraggables();
+
         foreach (ItemSlotData item in playerInventory)
         {
-            if (item.itemData.compostmaterial > 0)
+            if (item != null && item.itemData != null && item.itemData.compostmaterial > 0)
             {
                 craftable.Add(item);
             }
@@ -113,10 +103,18 @@ public class CompostShower : MonoBehaviour
     }
     public bool isCompostRecipe(ItemData data)
     {
-        if (data.compostmaterial == 1)
-            return true;
-        else
+        if (data == null)
+        {
             return false;
+        }
+
+        if (data == sisaTanaman || data == kotoranHewan || data == cabai || data == bawangPutih || data == emptyBottle)
+        {
+            return true;
+        }
+
+        // Fallback for older data setup.
+        return data.compostmaterial == 1;
     }
     public void AddItemToRecipe(ItemData data)
     {
@@ -155,18 +153,198 @@ public class CompostShower : MonoBehaviour
     
     public void Craft()
     {
-        GameObject g  = Instantiate(draggablePrefab);
-        g.transform.parent = UI.transform.Find("Inven");
-        g.transform.position = resultSlots[0].transform.position;
-        if(k < UI.transform.Find("Inven").childCount)
+        ItemData craftedItem = GetCraftResult();
+        if (craftedItem == null)
         {
-            g.GetComponent<DraggableInventoryCompost>().originSnappingPosition = UI.transform.Find("Inven").GetChild(k).transform.position;
-
+            Debug.LogWarning("[CompostShower] Recipe tidak cocok. Gunakan Sisa Tanaman + Kotoran Hewan untuk pupuk, atau Cabai + Bawang Putih + Empty Bottle untuk pestisida nabati.");
+            return;
         }
-        g.GetComponent<InventorySlot>().Display(new ItemSlotData(compost));
-        spawnedDraggable.Add(g);
+
+        List<ItemData> ingredientsToConsume = new List<ItemData>(recipe);
+        if (!TryConsumeRecipeIngredients(ingredientsToConsume))
+        {
+            Debug.LogWarning("[CompostShower] Gagal crafting karena bahan tidak ditemukan di inventory.");
+            return;
+        }
+
         resultSlots[0].GetComponent<Image>().sprite = defaultSprite;
-        InventoryManager.Instance.ShopToInventory(new ItemSlotData(compost));
+        InventoryManager.Instance.ShopToInventory(new ItemSlotData(craftedItem));
+        recipe.Clear();
+        RefreshCraftingUI();
+    }
+
+    private void RefreshCraftingUI()
+    {
+        playerInventory = InventoryManager.Instance.GetAllInventoryItems();
+
+        foreach (GameObject slot in craftingSlots)
+        {
+            Image image = slot.GetComponent<Image>();
+            if (image != null)
+            {
+                image.sprite = defaultSprite;
+            }
+        }
+
+        RebuildBagDraggables();
+    }
+
+    private void RebuildBagDraggables()
+    {
+        if (spawnedDraggable == null)
+        {
+            spawnedDraggable = new List<GameObject>();
+        }
+
+        foreach (GameObject spawned in spawnedDraggable)
+        {
+            if (spawned != null)
+            {
+                Destroy(spawned);
+            }
+        }
+
+        spawnedDraggable.Clear();
+
+        Transform invenTransform = UI.transform.Find("Inven");
+        k = 0;
+        for (int i = 0; i < playerInventory.Count; i++)
+        {
+            if (k < invenTransform.childCount)
+            {
+                GameObject g = Instantiate(draggablePrefab, invenTransform);
+                g.transform.position = invenTransform.GetChild(k).transform.position;
+                g.GetComponent<InventorySlot>().Display(playerInventory[i]);
+                g.GetComponent<DraggableInventoryCompost>().originSnappingPosition = invenTransform.GetChild(k).transform.position;
+                spawnedDraggable.Add(g);
+                k++;
+            }
+        }
+    }
+
+    private bool TryConsumeRecipeIngredients(List<ItemData> ingredients)
+    {
+        if (ingredients == null || ingredients.Count == 0)
+        {
+            return false;
+        }
+
+        List<ItemSlotData> inventoryItems = InventoryManager.Instance.GetAllInventoryItems();
+
+        // Validate all ingredients first to avoid partial consumption.
+        foreach (ItemData ingredient in ingredients)
+        {
+            bool found = false;
+            foreach (ItemSlotData slot in inventoryItems)
+            {
+                if (slot != null && !slot.IsEmpty() && slot.itemData == ingredient && slot.quantity > 0)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                return false;
+            }
+        }
+
+        foreach (ItemData ingredient in ingredients)
+        {
+            ItemSlotData slotToConsume = null;
+            foreach (ItemSlotData slot in inventoryItems)
+            {
+                if (slot != null && !slot.IsEmpty() && slot.itemData == ingredient && slot.quantity > 0)
+                {
+                    slotToConsume = slot;
+                    break;
+                }
+            }
+
+            if (slotToConsume == null)
+            {
+                return false;
+            }
+
+            InventoryManager.Instance.ConsumeItem(slotToConsume);
+        }
+
+        return true;
+    }
+
+    private ItemData GetCraftResult()
+    {
+        if (HasExactRecipe(sisaTanaman, kotoranHewan) || HasExactRecipeByName("Sisa Tanaman", "Kotoran Hewan"))
+        {
+            return pupukResult;
+        }
+
+        if (HasExactRecipe(cabai, bawangPutih, emptyBottle) || HasExactRecipeByName("Cabai", "Bawang Putih", "Empty Bottle") || HasExactRecipeByName("Cabai", "Bawang Putih", "Botol Kosong"))
+        {
+            return pestisidaNabatiResult;
+        }
+
+        return null;
+    }
+
+    private bool HasExactRecipe(params ItemData[] requiredItems)
+    {
+        if (recipe == null || requiredItems == null || recipe.Count != requiredItems.Length)
+        {
+            return false;
+        }
+
+        List<ItemData> remaining = new List<ItemData>(recipe);
+        foreach (ItemData item in requiredItems)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            int index = remaining.IndexOf(item);
+            if (index < 0)
+            {
+                return false;
+            }
+
+            remaining.RemoveAt(index);
+        }
+
+        return remaining.Count == 0;
+    }
+
+    private bool HasExactRecipeByName(params string[] requiredNames)
+    {
+        if (recipe == null || requiredNames == null || recipe.Count != requiredNames.Length)
+        {
+            return false;
+        }
+
+        List<string> remainingNames = new List<string>();
+        foreach (ItemData item in recipe)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            remainingNames.Add(item.name.ToLowerInvariant());
+        }
+
+        foreach (string requiredName in requiredNames)
+        {
+            int index = remainingNames.IndexOf(requiredName.ToLowerInvariant());
+            if (index < 0)
+            {
+                return false;
+            }
+
+            remainingNames.RemoveAt(index);
+        }
+
+        return remainingNames.Count == 0;
     }
     
 

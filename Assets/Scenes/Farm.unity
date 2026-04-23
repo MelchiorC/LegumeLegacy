@@ -32873,8 +32873,8 @@ MonoBehaviour:
   YesCompost: {fileID: 21300000, guid: 81f725345bdcb1041a20421154ffe689, type: 3}
   CompostText: {fileID: 1826028380}
   Stick: {fileID: 949170125}
-  NoStick: {fileID: 21300000, guid: 8719d864de757374296135eed2f84d9e, type: 3}
-  YesStick: {fileID: 21300000, guid: eff43c1c8ed208342b1ef869ac53ccb1, type: 3}
+  NoStick: {fileID: 21300000, guid: 736eb999f25ce084698e5bff3c88296c, type: 3}
+  YesStick: {fileID: 21300000, guid: b589c54a789c2df47806b99c0fbb7529, type: 3}
   StickText: {fileID: 1308126237}
   StickBox: {fileID: 851167087}
 --- !u!1 &1182558994 stripped
@@ -47228,7 +47228,7 @@ MonoBehaviour:
     quantity: 3
   - itemData: {fileID: 11400000, guid: caaa11f2ab6a73142ac2302f281462fb, type: 2}
     quantity: 3
-  - itemData: {fileID: 0}
+  - itemData: {fileID: 11400000, guid: e14dfab12710c7645ad30d86a5a9b67b, type: 2}
     quantity: 1
   - itemData: {fileID: 0}
     quantity: 1

@@ -40,25 +40,48 @@ public class DraggableInventoryCompost : MonoBehaviour, IPointerClickHandler, ID
         
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
-        //Debug.Log(results[0].gameObject.name);
-        //Debug.Log(results[0].gameObject.tag);
-        if (results[1].gameObject.tag == "CraftingSlotCompost" && CompostShower.instance.isCompostRecipe(gameObject.GetComponent<InventorySlot>().GetItemSlotData()))
+
+        GameObject craftingTarget = null;
+        GameObject bagTarget = null;
+        foreach (RaycastResult result in results)
         {
-            this.gameObject.transform.position = results[1].gameObject.transform.position;
-            CompostShower.instance.AddItemToRecipe(gameObject.GetComponent<InventorySlot>().GetItemSlotData());
-        } else if(results[1].gameObject.tag == "BagCraftingSlot")
+            if (result.gameObject == null)
+            {
+                continue;
+            }
+
+            if (craftingTarget == null && result.gameObject.CompareTag("CraftingSlotCompost"))
+            {
+                craftingTarget = result.gameObject;
+            }
+            else if (bagTarget == null && result.gameObject.CompareTag("BagCraftingSlot"))
+            {
+                bagTarget = result.gameObject;
+            }
+
+            if (craftingTarget != null && bagTarget != null)
+            {
+                break;
+            }
+        }
+
+        ItemData draggedItem = gameObject.GetComponent<InventorySlot>().GetItemSlotData();
+
+        if (craftingTarget != null && CompostShower.instance.isCompostRecipe(draggedItem))
         {
-            this.gameObject.transform.position = results[1].gameObject.transform.position;
-            
+            this.gameObject.transform.position = craftingTarget.transform.position;
+            CompostShower.instance.AddItemToRecipe(draggedItem);
+        }
+        else if (bagTarget != null)
+        {
+            this.gameObject.transform.position = bagTarget.transform.position;
+            CompostShower.instance.RemoveItemToRecipe(draggedItem);
         }
         else
         {
             this.gameObject.transform.position = originSnappingPosition;
             this.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
-            if(results[1].gameObject.tag != "CraftingSlotCompost")
-            {
-                CompostShower.instance.RemoveItemToRecipe(gameObject.GetComponent<InventorySlot>().GetItemSlotData());
-            }
+            CompostShower.instance.RemoveItemToRecipe(draggedItem);
         }
     }
 
