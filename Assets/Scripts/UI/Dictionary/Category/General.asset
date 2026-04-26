@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f669ce583f375fd4284f98ab3cc72bb2, type: 3}
+  m_Name: General
+  m_EditorClassIdentifier: Assembly-CSharp::MechanicCategory
+  categoryName: General
+  entries:
+  - {fileID: 11400000, guid: 4a582927c30c03d4d81b6a2ea54b51ad, type: 2}
+  - {fileID: 11400000, guid: b5f556be5b3d69244b92b204122f3b64, type: 2}

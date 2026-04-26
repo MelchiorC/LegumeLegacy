@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f669ce583f375fd4284f98ab3cc72bb2, type: 3}
+  m_Name: Hama
+  m_EditorClassIdentifier: Assembly-CSharp::MechanicCategory
+  categoryName: Hama
+  entries:
+  - {fileID: 11400000, guid: d37531e60a1dc9440b023e894eb3dbc1, type: 2}
+  - {fileID: 11400000, guid: dfe061df040c015469a72a74993acc8e, type: 2}
+  - {fileID: 11400000, guid: 8267d9f4e3928f44090b7841f8bcc046, type: 2}
+  - {fileID: 11400000, guid: b657bec0ba97bc9478a4dbf7fae48961, type: 2}
+  - {fileID: 11400000, guid: 5b64f6fd8e1ba4a42b51526ec1c3b7f8, type: 2}
+  - {fileID: 11400000, guid: cdf2fcc3a6d6fc54aa38f871c2958aca, type: 2}
