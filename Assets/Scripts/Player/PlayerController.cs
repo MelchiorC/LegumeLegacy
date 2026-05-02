@@ -63,23 +63,19 @@ public class PlayerController : MonoBehaviour
         // Prevent movement if UI is active
         if (ONui) return;
 
-        // Prevent movement if clicking on interactive UI elements (buttons, panels, etc.)
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        // Use RaycastAll only, skip IsPointerOverGameObject entirely.
+        if (EventSystem.current != null)
         {
-            // Check if we're actually clicking on an interactive UI element
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
             pointerData.position = Input.mousePosition;
-            
+
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, results);
-            
-            // Only block if we hit an actual UI element with a graphic component
+
             foreach (RaycastResult result in results)
             {
                 if (result.gameObject.GetComponent<UnityEngine.UI.Graphic>() != null)
-                {
                     return;
-                }
             }
         }
 

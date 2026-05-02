@@ -8,4 +8,5 @@ public class MechanicEntry : ScriptableObject
     public string mechanicName;
     [TextArea] public string mechanicDescription;
     public Sprite mechanicImage;
+    public List<MechanicEntry> linkedEntries;
 }

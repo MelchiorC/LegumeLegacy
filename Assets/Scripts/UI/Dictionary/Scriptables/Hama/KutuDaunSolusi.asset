@@ -10,9 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
-  m_Name: JamurPatogen
+  m_Name: KutuDaunSolusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
-  mechanicName: Jamur Patogen (Fusarium/Phytophthora)
-  mechanicDescription: 'Mikroorganisme yang berkembang pesat dalam kondisi lembap
-    dan curah hujan tinggi. '
-  mechanicImage: {fileID: -891228368, guid: cf6e8672fa3a79d41bcd9aaff0b91e0e, type: 3}
+  mechanicName: Solusi Kutu Daun
+  mechanicDescription: 'Lepaskan Kepik (Ladybug) sebagai predator alami.
+
+
+    Ini
+    adalah solusi untuk<link="KutuDaun"><color=#e8a96a>Kutu Daun</color></link> '
+  mechanicImage: {fileID: 21300000, guid: 53f8b631148cae34aa29a9577fa6ed08, type: 3}
+  linkedEntries:
+  - {fileID: 11400000, guid: d37531e60a1dc9440b023e894eb3dbc1, type: 2}

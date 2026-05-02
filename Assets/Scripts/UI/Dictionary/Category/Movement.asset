@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Movement
   m_EditorClassIdentifier: Assembly-CSharp::MechanicCategory
   categoryName: Movement
-  entries: []
+  entries:
+  - {fileID: 11400000, guid: d5720b246b0408641b42137c588dcf16, type: 2}

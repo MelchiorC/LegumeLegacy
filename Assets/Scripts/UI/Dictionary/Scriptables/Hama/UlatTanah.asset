@@ -15,4 +15,4 @@ MonoBehaviour:
   mechanicName: 'Ulat Tanah (Agrotis ipsilon) '
   mechanicDescription: "Hama yang aktif di malam hari dan menyerang dengan memotong
     batang tanaman muda. \r\n\r\nCara Mengatasi: Semprot dengan pestisida "
-  mechanicImage: {fileID: 0}
+  mechanicImage: {fileID: 21300000, guid: c3935ffe00a9c964cae8ebcacb7a7347, type: 3}

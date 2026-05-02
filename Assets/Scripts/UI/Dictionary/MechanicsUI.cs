@@ -97,4 +97,42 @@ private void PopulateEntryButtons()
         mechanicTitleText.text = entry.mechanicName;
         mechanicDescriptionText.text = entry.mechanicDescription;
     }
+
+private void Update()
+{
+    if (Input.GetMouseButtonDown(0))
+    {
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(
+        mechanicDescriptionText, Input.mousePosition, null);
+
+        Debug.Log("Link index: " + linkIndex); // ← add this
+
+        if (linkIndex != -1)
+        {
+            TMP_LinkInfo linkInfo = mechanicDescriptionText.textInfo.linkInfo[linkIndex];
+            string linkedName = linkInfo.GetLinkID();
+            Debug.Log("Linked to: " + linkedName); // ← and this
+            NavigateToEntry(linkedName);
+        }
+    }
+}
+
+    private void NavigateToEntry(string entryName)
+{
+    Debug.Log("Looking for: '" + entryName + "'"); // ← add this
+    foreach (var category in mechanicCategories)
+    {
+        foreach (var entry in category.entries)
+        {
+            Debug.Log("Checking: '" + entry.mechanicName + "'"); // ← and this
+            if (entry.name == entryName)
+            {
+                SwitchCategory(category);
+                ShowMechanic(entry);
+                return;
+            }
+        }
+    }
+    Debug.Log("Entry not found!"); // ← and this
+}
     }

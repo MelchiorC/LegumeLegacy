@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
   m_Name: NewMechanicEntry
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
-  mechanicName: tyu
+  mechanicName: test
   mechanicDescription: WOW
   mechanicImage: {fileID: 1564659967, guid: c946f959c0ce42f4b91d4290c26dc2ab, type: 3}
