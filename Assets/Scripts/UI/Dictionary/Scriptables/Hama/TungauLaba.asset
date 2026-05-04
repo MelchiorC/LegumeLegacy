@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: TungauLaba
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: 'Tungau Laba-laba (Spider Mite) '
-  mechanicDescription: "Hama mikroskopis dari golongan Arachnida (bukan serangga).
-    Mengisap cairan daun dan meninggalkan jaring-jaring halus berwarna putih. Populasinya
-    meledak pesat pada kondisi cuaca yang sangat panas dan kering. \r\n\r\nCara Mengatasi:
-    Lepaskan Kepik (Ladybug) sebagai predator alami "
+  mechanicDescription: Hama mikroskopis dari golongan Arachnida yang mengisap cairan
+    daun dan meninggalkan jaring-jaring halus putih. <link="TungauLabaLabaSolusi"><color=#e8a96a>Klik
+    untuk solusinya</color></link>
   mechanicImage: {fileID: 1976940997, guid: 8a6e4954d45e35e4c9e3e0b9b474e979, type: 3}
+  linkedEntries:
+  - {fileID: 11400000, guid: 6c4286fd1588ca643aaa9e95de090034, type: 2}

@@ -105,13 +105,13 @@ private void Update()
         int linkIndex = TMP_TextUtilities.FindIntersectingLink(
         mechanicDescriptionText, Input.mousePosition, null);
 
-        Debug.Log("Link index: " + linkIndex); // ← add this
+        Debug.Log("Link index: " + linkIndex); 
 
         if (linkIndex != -1)
         {
             TMP_LinkInfo linkInfo = mechanicDescriptionText.textInfo.linkInfo[linkIndex];
             string linkedName = linkInfo.GetLinkID();
-            Debug.Log("Linked to: " + linkedName); // ← and this
+            Debug.Log("Linked to: " + linkedName); 
             NavigateToEntry(linkedName);
         }
     }
@@ -119,12 +119,12 @@ private void Update()
 
     private void NavigateToEntry(string entryName)
 {
-    Debug.Log("Looking for: '" + entryName + "'"); // ← add this
+    Debug.Log("Looking for: '" + entryName + "'"); 
     foreach (var category in mechanicCategories)
     {
         foreach (var entry in category.entries)
         {
-            Debug.Log("Checking: '" + entry.mechanicName + "'"); // ← and this
+            Debug.Log("Checking: '" + entry.mechanicName + "'"); 
             if (entry.name == entryName)
             {
                 SwitchCategory(category);
@@ -133,6 +133,10 @@ private void Update()
             }
         }
     }
-    Debug.Log("Entry not found!"); // ← and this
+    Debug.Log("Entry not found!"); 
 }
+    public void OpenEntry(string entryFileName)
+    {
+        NavigateToEntry(entryFileName);
+    }
     }

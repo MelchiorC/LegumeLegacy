@@ -15,3 +15,8 @@ MonoBehaviour:
   categoryName: Movement
   entries:
   - {fileID: 11400000, guid: d5720b246b0408641b42137c588dcf16, type: 2}
+  - {fileID: 11400000, guid: 5a0f94ccb96c8dc4cacc28e9ac6b503e, type: 2}
+  - {fileID: 11400000, guid: 6c4286fd1588ca643aaa9e95de090034, type: 2}
+  - {fileID: 11400000, guid: ee0155f463bc97a4da56451f25eae723, type: 2}
+  - {fileID: 11400000, guid: 710f6ccf80b27b8419c8b41f138d7864, type: 2}
+  - {fileID: 11400000, guid: 89d6e5a92e0417b45b4a0f1d71dfea7e, type: 2}

@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: JamurPatogen
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: Jamur Patogen (Fusarium/Phytophthora)
-  mechanicDescription: 'Mikroorganisme yang berkembang pesat dalam kondisi lembap
-    dan curah hujan tinggi. '
+  mechanicDescription: Mikroorganisme yang berkembang pesat dalam kondisi lembap
+    dan curah hujan tinggi, sering menyebabkan busuk akar atau layu. <link="JamurPatogenSolusi"><color=#e8a96a>Klik
+    untuk solusinya</color></link>
   mechanicImage: {fileID: -891228368, guid: cf6e8672fa3a79d41bcd9aaff0b91e0e, type: 3}
+  linkedEntries:
+  - {fileID: 11400000, guid: 5a0f94ccb96c8dc4cacc28e9ac6b503e, type: 2}

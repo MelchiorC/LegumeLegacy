@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -61,6 +61,7 @@ public class UIManager : MonoBehaviour, ITimeTracker
 
     [Header("Dictionary Panels")]
     [SerializeField] private GameObject uiMechanicsPanel;
+    [SerializeField] private MechanicsUI mechanicsUI;
     [SerializeField] private GameObject backgroundPanel;
     [SerializeField] private KeyCode dictionaryToggleKey = KeyCode.None;
 
@@ -374,5 +375,29 @@ public class UIManager : MonoBehaviour, ITimeTracker
         if (uiMechanicsPanel != null)
             uiMechanicsPanel.SetActive(false);
     }
+    // Add to Dictionary Panels section
+    public void OpenPestEntry(Soil.PestType pestType)
+{
+    string entryName = GetPestEntryName(pestType);
+    if (entryName == null) return;
+
+    ShowMechanics();
+    mechanicsUI.OpenEntry(entryName);
+}
+
+private string GetPestEntryName(Soil.PestType pestType)
+{
+    switch (pestType)
+    {
+        case Soil.PestType.PathogenicFungi: return "PathogenicFungi";
+        case Soil.PestType.Aphids: return "Aphids";
+        case Soil.PestType.Armyworm: return "Armyworm";
+        case Soil.PestType.Cutworm: return "Cutworm";
+        case Soil.PestType.CabbageWorm: return "CabbageWorm";
+        case Soil.PestType.SpiderMites: return "SpiderMites";
+        default: return null;
+    }
+}
         #endregion
+
 }
