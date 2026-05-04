@@ -389,12 +389,12 @@ private string GetPestEntryName(Soil.PestType pestType)
 {
     switch (pestType)
     {
-        case Soil.PestType.PathogenicFungi: return "PathogenicFungi";
-        case Soil.PestType.Aphids: return "Aphids";
-        case Soil.PestType.Armyworm: return "Armyworm";
-        case Soil.PestType.Cutworm: return "Cutworm";
-        case Soil.PestType.CabbageWorm: return "CabbageWorm";
-        case Soil.PestType.SpiderMites: return "SpiderMites";
+        case Soil.PestType.PathogenicFungi: return "JamurPatogen";
+        case Soil.PestType.Aphids: return "KutuDaun";
+        case Soil.PestType.Armyworm: return "UlatGrayak";
+        case Soil.PestType.Cutworm: return "UlatTanah";
+        case Soil.PestType.CabbageWorm: return "UlatKubis";
+        case Soil.PestType.SpiderMites: return "TungauLaba";
         default: return null;
     }
 }

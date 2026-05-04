@@ -28,6 +28,9 @@ public class HaraImage : MonoBehaviour
     public GameObject StickText;
     public GameObject StickBox;
 
+    public Button learnMoreButton;
+    public TMP_Text learnMoreText;
+
     public void IsItWatered(bool water)
     {
         Image img = Water.GetComponent<Image>();
@@ -65,50 +68,67 @@ public class HaraImage : MonoBehaviour
     }
 
     public void PestStatus(Soil.PestType pestType)
+{
+    Image img = Stick.GetComponent<Image>();
+    TMP_Text text = StickText.GetComponent<TMP_Text>();
+
+    img.gameObject.SetActive(true);
+    text.gameObject.SetActive(true);
+    StickBox.gameObject.SetActive(true);
+
+    // hide button by default
+    learnMoreButton.gameObject.SetActive(false);
+
+    switch (pestType)
     {
-        Image img = Stick.GetComponent<Image>();
-        TMP_Text text = StickText.GetComponent<TMP_Text>();
-
-        img.gameObject.SetActive(true);
-        text.gameObject.SetActive(true);
-        StickBox.gameObject.SetActive(true);
-
-        switch (pestType)
-        {
-            case Soil.PestType.None:
-                img.sprite = YesStick;
-                text.text = "Tanaman Sehat";
-                break;
-            case Soil.PestType.PathogenicFungi:
-                img.sprite = PathogenicFungiIcon;
-                text.text = "Jamur patogen menyerang tanaman.";
-                break;
-            case Soil.PestType.Aphids:
-                img.sprite = AphidsIcon;
-                text.text = "Kutu daun menyerang tanaman";
-                break;
-            case Soil.PestType.Armyworm:
-                img.sprite = ArmywormIcon;
-                text.text = "Ulat grayak menyerang tanaman";
-                break;
-            case Soil.PestType.Cutworm:
-                img.sprite = CutwormIcon;
-                text.text = "Ulat tanah menyerang tanaman";
-                break;
-            case Soil.PestType.CabbageWorm:
-                img.sprite = CabbageWormIcon;
-                text.text = "Ulat kubis menyerang tanaman";
-                break;
-            case Soil.PestType.SpiderMites:
-                img.sprite = SpiderMitesIcon;
-                text.text = "Kutu laba-laba menyerang tanaman";
-                break;
-        }
+        case Soil.PestType.None:
+            img.sprite = YesStick;
+            text.text = "Tanaman Sehat";
+            break;
+        case Soil.PestType.PathogenicFungi:
+            img.sprite = PathogenicFungiIcon;
+            text.text = "Jamur patogen menyerang tanaman.";
+            ShowLearnMore(pestType);
+            break;
+        case Soil.PestType.Aphids:
+            img.sprite = AphidsIcon;
+            text.text = "Kutu daun menyerang tanaman";
+            ShowLearnMore(pestType);
+            break;
+        case Soil.PestType.Armyworm:
+            img.sprite = ArmywormIcon;
+            text.text = "Ulat grayak menyerang tanaman";
+            ShowLearnMore(pestType);
+            break;
+        case Soil.PestType.Cutworm:
+            img.sprite = CutwormIcon;
+            text.text = "Ulat tanah menyerang tanaman";
+            ShowLearnMore(pestType);
+            break;
+        case Soil.PestType.CabbageWorm:
+            img.sprite = CabbageWormIcon;
+            text.text = "Ulat kubis menyerang tanaman";
+            ShowLearnMore(pestType);
+            break;
+        case Soil.PestType.SpiderMites:
+            img.sprite = SpiderMitesIcon;
+            text.text = "Kutu laba-laba menyerang tanaman";
+            ShowLearnMore(pestType);
+            break;
     }
-
+}
     // Backward compatibility for existing callsites.
     public void StickYes(bool stick, bool treli)
     {
         PestStatus(stick ? Soil.PestType.PathogenicFungi : Soil.PestType.None);
     }
+
+    private void ShowLearnMore(Soil.PestType pestType)
+{
+    learnMoreButton.gameObject.SetActive(true);
+    learnMoreButton.onClick.RemoveAllListeners();
+    learnMoreButton.onClick.AddListener(() => 
+        UIManager.Instance.OpenPestEntry(pestType));
+}
+
 }

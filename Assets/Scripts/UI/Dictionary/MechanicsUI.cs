@@ -22,7 +22,7 @@ public class MechanicsUI : MonoBehaviour
     [SerializeField] private TMP_Text mechanicTitleText;
     [SerializeField] private TMP_Text mechanicDescriptionText;
 
-    private MechanicCategory currentCategory;
+    private MechanicCategory currentCategory; //Track Current active category
 
     private void Start()
     {
@@ -98,10 +98,13 @@ private void PopulateEntryButtons()
         mechanicDescriptionText.text = entry.mechanicDescription;
     }
 
+//Detects Links from TMP 
+//Link are written like: <link="AssetFileName"><color=color>LinkText</color></link>
 private void Update()
 {
     if (Input.GetMouseButtonDown(0))
     {
+        //find if the click is on a TMP link from the text
         int linkIndex = TMP_TextUtilities.FindIntersectingLink(
         mechanicDescriptionText, Input.mousePosition, null);
 
@@ -109,6 +112,7 @@ private void Update()
 
         if (linkIndex != -1)
         {
+            // Get the link info and extract the linked entry name, then navigate to it
             TMP_LinkInfo linkInfo = mechanicDescriptionText.textInfo.linkInfo[linkIndex];
             string linkedName = linkInfo.GetLinkID();
             Debug.Log("Linked to: " + linkedName); 
@@ -124,6 +128,7 @@ private void Update()
     {
         foreach (var entry in category.entries)
         {
+            //Search all categories and entries for a match and then switch to it.
             Debug.Log("Checking: '" + entry.mechanicName + "'"); 
             if (entry.name == entryName)
             {
@@ -135,7 +140,8 @@ private void Update()
     }
     Debug.Log("Entry not found!"); 
 }
-    public void OpenEntry(string entryFileName)
+
+    public void OpenEntry(string entryFileName) //For external calls, e.g. from HaraImage
     {
         NavigateToEntry(entryFileName);
     }
