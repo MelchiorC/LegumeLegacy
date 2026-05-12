@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pestisida
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   description: Digunakan untuk mengontrol hama
-  thumbnail: {fileID: 21300000, guid: 82559efedbacd0546b60d7132d5a330f, type: 3}
+  thumbnail: {fileID: 21300000, guid: 40ea09bba08e7ba458ff6379a60ae4dd, type: 3}
   gameModel: {fileID: 0}
   cost: 0
   compostmaterial: 0

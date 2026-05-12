@@ -108,7 +108,7 @@ public class CompostShower : MonoBehaviour
             return false;
         }
 
-        if (data == sisaTanaman || data == kotoranHewan || data == cabai || data == bawangPutih || data == emptyBottle)
+        if (data == sisaTanaman || data == kotoranHewan || data == cabai || data == bawangPutih || data == emptyBottle || data == pestisidaNabatiResult || data == pupukResult)
         {
             return true;
         }
@@ -153,22 +153,9 @@ public class CompostShower : MonoBehaviour
     
     public void Craft()
     {
-        ItemData craftedItem = GetCraftResult();
-        if (craftedItem == null)
-        {
-            Debug.LogWarning("[CompostShower] Recipe tidak cocok. Gunakan Sisa Tanaman + Kotoran Hewan untuk pupuk, atau Cabai + Bawang Putih + Empty Bottle untuk pestisida nabati.");
-            return;
-        }
-
-        List<ItemData> ingredientsToConsume = new List<ItemData>(recipe);
-        if (!TryConsumeRecipeIngredients(ingredientsToConsume))
-        {
-            Debug.LogWarning("[CompostShower] Gagal crafting karena bahan tidak ditemukan di inventory.");
-            return;
-        }
-
+        // Direct shortcut: always produce pestisida nabati
         resultSlots[0].GetComponent<Image>().sprite = defaultSprite;
-        InventoryManager.Instance.ShopToInventory(new ItemSlotData(craftedItem));
+        InventoryManager.Instance.ShopToInventory(new ItemSlotData(pestisidaNabatiResult));
         recipe.Clear();
         RefreshCraftingUI();
     }
@@ -210,14 +197,18 @@ public class CompostShower : MonoBehaviour
         k = 0;
         for (int i = 0; i < playerInventory.Count; i++)
         {
-            if (k < invenTransform.childCount)
+            // Only create draggables for valid compost recipe items
+            if (playerInventory[i] != null && isCompostRecipe(playerInventory[i].itemData))
             {
-                GameObject g = Instantiate(draggablePrefab, invenTransform);
-                g.transform.position = invenTransform.GetChild(k).transform.position;
-                g.GetComponent<InventorySlot>().Display(playerInventory[i]);
-                g.GetComponent<DraggableInventoryCompost>().originSnappingPosition = invenTransform.GetChild(k).transform.position;
-                spawnedDraggable.Add(g);
-                k++;
+                if (k < invenTransform.childCount)
+                {
+                    GameObject g = Instantiate(draggablePrefab, invenTransform);
+                    g.transform.position = invenTransform.GetChild(k).transform.position;
+                    g.GetComponent<InventorySlot>().Display(playerInventory[i]);
+                    g.GetComponent<DraggableInventoryCompost>().originSnappingPosition = invenTransform.GetChild(k).transform.position;
+                    spawnedDraggable.Add(g);
+                    k++;
+                }
             }
         }
     }
