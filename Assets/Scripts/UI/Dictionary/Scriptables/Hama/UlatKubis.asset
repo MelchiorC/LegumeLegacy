@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
   m_Name: UlatKubis
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
-  mechanicName: 'Ulat Kubis (Plutella xylostella / Crocidolomia pavonana) '
+  mechanicName: 'Ulat Kubis (<i>Plutella xylostella</i> / <i>Crocidolomia pavonana</i>) '
   mechanicDescription: 'Hama ulat spesifik yang menyerang famili Brassicaceae dan
-    membuat daun berlubang hingga gagal membentuk krop. <link="UlatKubisSolusi"><color=#e8a96a>Klik
-    untuk solusinya</color></link>
+    membuat daun berlubang hingga gagal membentuk krop.
+
+    Hama ini menyerang tanaman
+    Kubis <link="UlatKubisSolusi"><color=#e8a96a>Klik untuk solusinya</color></link>
 
 '
-  mechanicImage: {fileID: -942683481, guid: 8948f8b86a33e9549b61ae3547c7b2ee, type: 3}
+  mechanicImage: {fileID: 21300000, guid: 8948f8b86a33e9549b61ae3547c7b2ee, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: 710f6ccf80b27b8419c8b41f138d7864, type: 2}

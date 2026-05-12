@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: TungauLabaLabaSolusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: Solusi Tungau Laba-laba
-  mechanicDescription: "Lepaskan Kepik (Ladybug) sebagai predator alami. \nIni adalah
-    solusi untuk <link=\"TungauLaba\"><color=#e8a96a>Tungau Laba-laba</color></link>"
-  mechanicImage: {fileID: 0}
+  mechanicDescription: Gunakan Pestisida Nabati atau Kepik. Ini adalah solusi untuk
+    <link="TungauLaba"><color=#e8a96a>Tungau Laba-laba</color></link>
+  mechanicImage: {fileID: 21300000, guid: 53f8b631148cae34aa29a9577fa6ed08, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: 8267d9f4e3928f44090b7841f8bcc046, type: 2}

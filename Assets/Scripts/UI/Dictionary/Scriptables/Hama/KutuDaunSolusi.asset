@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: KutuDaunSolusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: Solusi Kutu Daun
-  mechanicDescription: "Lepaskan Kepik (Ladybug) sebagai predator alami. \nIni adalah
-    solusi untuk <link=\"KutuDaun\"><color=#e8a96a>Kutu Daun</color></link>"
+  mechanicDescription: Gunakan Kepik atau Pestisida Nabati. Ini adalah solusi untuk
+    <link="KutuDaun"><color=#e8a96a>Kutu Daun</color></link>
   mechanicImage: {fileID: 21300000, guid: 53f8b631148cae34aa29a9577fa6ed08, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: d37531e60a1dc9440b023e894eb3dbc1, type: 2}

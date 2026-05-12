@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
   m_Name: UlatTanah
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
-  mechanicName: 'Ulat Tanah (Agrotis ipsilon) '
-  mechanicDescription: Hama yang aktif di malam hari dan menyerang dengan memotong
-    batang tanaman yang masih muda. <link="UlatTanahSolusi"><color=#e8a96a>Klik untuk
-    solusinya</color></link>
-  mechanicImage: {fileID: 21300000, guid: 3af4aad826c45064da15ca4b3d0ef147, type: 3}
+  mechanicName: 'Ulat Tanah (<i>Agrotis ipsilon</i>) '
+  mechanicDescription: "Hama yang aktif di malam hari dan menyerang dengan memotong
+    batang tanaman yang masih muda. \nHama ini menyerang tanaman Jagung, dan Kentang<link=\"UlatTanahSolusi\"><color=#e8a96a>Klik
+    untuk solusinya</color></link>"
+  mechanicImage: {fileID: 21300000, guid: 8d3c7de5daf1dc941a49c739752047d6, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: 89d6e5a92e0417b45b4a0f1d71dfea7e, type: 2}

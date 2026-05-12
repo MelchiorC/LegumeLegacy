@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
   m_Name: TungauLaba
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
-  mechanicName: 'Tungau Laba-laba (Spider Mite) '
-  mechanicDescription: Hama mikroskopis dari golongan Arachnida yang mengisap cairan
-    daun dan meninggalkan jaring-jaring halus putih. <link="TungauLabaLabaSolusi"><color=#e8a96a>Klik
-    untuk solusinya</color></link>
-  mechanicImage: {fileID: 1976940997, guid: 8a6e4954d45e35e4c9e3e0b9b474e979, type: 3}
+  mechanicName: 'Tungau Laba-laba (<i>Spider Mite</i>) '
+  mechanicDescription: 'Hama mikroskopis dari golongan Arachnida yang mengisap cairan
+    daun dan meninggalkan jaring-jaring halus putih.
+
+    Hama ini menyerang tanaman
+    Kacang Panjang, dan Kentang. <link="TungauLabaLabaSolusi"><color=#e8a96a>Klik
+    untuk solusinya</color></link>'
+  mechanicImage: {fileID: 21300000, guid: 46b8b444a86aba74881726ba036194f7, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: 6c4286fd1588ca643aaa9e95de090034, type: 2}

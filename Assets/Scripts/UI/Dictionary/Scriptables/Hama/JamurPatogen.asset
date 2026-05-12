@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
   m_Name: JamurPatogen
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
-  mechanicName: Jamur Patogen (Fusarium/Phytophthora)
+  mechanicName: Jamur Patogen (<i>Fusarium</i>/<i>Phytophthora</i>)
   mechanicDescription: "Mikroorganisme yang berkembang pesat dalam kondisi lembap
     dan curah hujan tinggi, sering menyebabkan busuk akar atau layu.\n <link=\"JamurPatogenSolusi\"><color=#e8a96a>Klik
     untuk solusinya</color></link>"

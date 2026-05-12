@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f669ce583f375fd4284f98ab3cc72bb2, type: 3}
-  m_Name: Movement
+  m_Name: Solusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicCategory
-  categoryName: Movement
+  categoryName: Solusi
   entries:
   - {fileID: 11400000, guid: d5720b246b0408641b42137c588dcf16, type: 2}
   - {fileID: 11400000, guid: 5a0f94ccb96c8dc4cacc28e9ac6b503e, type: 2}

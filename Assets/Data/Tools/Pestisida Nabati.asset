@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f365f134f22324f9ed3729b4e674ba, type: 3}
   m_Name: Pestisida Nabati
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
-  description: 
-  thumbnail: {fileID: 0}
+  description: Ramuan tradisional hasil ekstraksi capsaicin dan allicin. Semprotan
+    pedas nan menyengat ini adalah tameng pelindung alami terbaik untuk ladang organikmu.
+  thumbnail: {fileID: 21300000, guid: 000c9157f5ff0a147b44360466f4fe16, type: 3}
   gameModel: {fileID: 0}
   cost: 0
   compostmaterial: 0

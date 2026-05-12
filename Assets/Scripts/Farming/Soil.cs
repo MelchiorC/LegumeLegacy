@@ -298,6 +298,14 @@ public class Soil : MonoBehaviour, ITimeTracker
                     ControlPests(EquipmentData.ToolType.Ladybug);
                     break;
 
+                case EquipmentData.ToolType.BotanicalPesticide:
+                    ControlPests(EquipmentData.ToolType.BotanicalPesticide);
+                    break;
+
+                case EquipmentData.ToolType.BacillusThuringiensis:
+                    ControlPests(EquipmentData.ToolType.BacillusThuringiensis);
+                    break;
+
                 case EquipmentData.ToolType.PH:
                     if (cropPlanted != null)
                     {
@@ -560,31 +568,34 @@ public class Soil : MonoBehaviour, ITimeTracker
             return;
         }
 
-        if (toolType == EquipmentData.ToolType.Pesticide && (activePest == PestType.PathogenicFungi || activePest == PestType.Armyworm))
+        if (toolType == EquipmentData.ToolType.Pesticide && activePest == PestType.PathogenicFungi)
         {
             activePest = PestType.None;
             Debug.Log("[PestControl] Pests controlled successfully with pesticide.");
             return;
         }
 
-        if (toolType == EquipmentData.ToolType.Pesticide && (activePest == PestType.Cutworm || activePest == PestType.CabbageWorm))
+        if (toolType == EquipmentData.ToolType.BacillusThuringiensis &&
+            (activePest == PestType.Armyworm || activePest == PestType.Cutworm || activePest == PestType.CabbageWorm))
         {
             activePest = PestType.None;
-            Debug.Log("[PestControl] Worm pests controlled successfully with pesticide.");
+            Debug.Log("[PestControl] Worm pests controlled successfully with Bacillus thuringiensis.");
             return;
         }
 
-        if (toolType == EquipmentData.ToolType.Ladybug && activePest == PestType.Aphids)
+        if ((toolType == EquipmentData.ToolType.Ladybug || toolType == EquipmentData.ToolType.BotanicalPesticide) &&
+            activePest == PestType.Aphids)
         {
             activePest = PestType.None;
-            Debug.Log("[PestControl] Aphids controlled successfully with ladybugs.");
+            Debug.Log($"[PestControl] Aphids controlled successfully with {toolType}.");
             return;
         }
 
-        if (toolType == EquipmentData.ToolType.Ladybug && activePest == PestType.SpiderMites)
+        if ((toolType == EquipmentData.ToolType.BotanicalPesticide || toolType == EquipmentData.ToolType.Ladybug) &&
+            activePest == PestType.SpiderMites)
         {
             activePest = PestType.None;
-            Debug.Log("[PestControl] Spider mites controlled successfully with ladybugs.");
+            Debug.Log($"[PestControl] Spider mites controlled successfully with {toolType}.");
             return;
         }
 

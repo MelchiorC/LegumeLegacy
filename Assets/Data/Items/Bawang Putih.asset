@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd546a1b9d498143868266de2c9462b, type: 3}
   m_Name: Bawang Putih
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  description: 
-  thumbnail: {fileID: 0}
+  description: Umbi beraroma tajam yang wajib ada di setiap dapur. Aromanya yang
+    kuat tidak hanya mengusir vampir, tapi juga ampuh membuat hama kebingungan mencari
+    tanaman utamamu.
+  thumbnail: {fileID: 21300000, guid: 98d8c06f7691646448c96af185772e07, type: 3}
   gameModel: {fileID: 0}
   cost: 0
   compostmaterial: 0

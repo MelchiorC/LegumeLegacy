@@ -30,6 +30,7 @@ public class CompostShower : MonoBehaviour
     [Header("Pestisida Nabati Recipe")]
     public ItemData cabai;
     public ItemData bawangPutih;
+    [HideInInspector]
     public ItemData emptyBottle;
 
     public GameObject draggablePrefab;
@@ -108,7 +109,12 @@ public class CompostShower : MonoBehaviour
             return false;
         }
 
-        if (data == sisaTanaman || data == kotoranHewan || data == cabai || data == bawangPutih || data == emptyBottle || data == pestisidaNabatiResult || data == pupukResult)
+        if (data == emptyBottle || IsItemNamed(data, "Empty Bottle", "Botol Kosong"))
+        {
+            return false;
+        }
+
+        if (data == sisaTanaman || data == kotoranHewan || IsPestisidaNabatiIngredient(data) || data == pestisidaNabatiResult || data == pupukResult)
         {
             return true;
         }
@@ -153,9 +159,22 @@ public class CompostShower : MonoBehaviour
     
     public void Craft()
     {
-        // Direct shortcut: always produce pestisida nabati
+        ItemData craftResult = GetCraftResult();
+        if (craftResult == null)
+        {
+            Debug.Log("[CompostCraft] Invalid recipe.");
+            return;
+        }
+
+        List<ItemData> ingredientsToConsume = new List<ItemData>(recipe);
+        if (!TryConsumeRecipeIngredients(ingredientsToConsume))
+        {
+            Debug.LogWarning("[CompostCraft] Recipe ingredients are missing from inventory.");
+            return;
+        }
+
         resultSlots[0].GetComponent<Image>().sprite = defaultSprite;
-        InventoryManager.Instance.ShopToInventory(new ItemSlotData(pestisidaNabatiResult));
+        InventoryManager.Instance.ShopToInventory(new ItemSlotData(craftResult));
         recipe.Clear();
         RefreshCraftingUI();
     }
@@ -271,7 +290,7 @@ public class CompostShower : MonoBehaviour
             return pupukResult;
         }
 
-        if (HasExactRecipe(cabai, bawangPutih, emptyBottle) || HasExactRecipeByName("Cabai", "Bawang Putih", "Empty Bottle") || HasExactRecipeByName("Cabai", "Bawang Putih", "Botol Kosong"))
+        if (HasExactRecipe(cabai, bawangPutih) || HasExactRecipeByName("Cabai", "Bawang Putih"))
         {
             return pestisidaNabatiResult;
         }
@@ -336,6 +355,29 @@ public class CompostShower : MonoBehaviour
         }
 
         return remainingNames.Count == 0;
+    }
+
+    private bool IsPestisidaNabatiIngredient(ItemData data)
+    {
+        return data == cabai || data == bawangPutih || IsItemNamed(data, "Cabai", "Bawang Putih");
+    }
+
+    private bool IsItemNamed(ItemData data, params string[] names)
+    {
+        if (data == null || names == null)
+        {
+            return false;
+        }
+
+        foreach (string itemName in names)
+        {
+            if (string.Equals(data.name, itemName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     
 
