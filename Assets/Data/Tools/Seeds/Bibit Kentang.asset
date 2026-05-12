@@ -17,7 +17,7 @@ MonoBehaviour:
   thumbnail: {fileID: 21300000, guid: 9e9ca148824c7db4d801a309c0623a92, type: 3}
   gameModel: {fileID: 748890034380737929, guid: 796acc10f02552d4092228b943a18c26,
     type: 3}
-  cost: 2000
+  cost: 0
   compostmaterial: 0
   daysToGrow: 1
   cropToYield: {fileID: 11400000, guid: 0289ba4d98423304aab5d15326f92dd6, type: 2}

@@ -16,4 +16,5 @@ MonoBehaviour:
   thumbnail: {fileID: 1029648329, guid: c946f959c0ce42f4b91d4290c26dc2ab, type: 3}
   gameModel: {fileID: 919132149155446097, guid: a0e14fdba7dc8214b9b5e79820269637,
     type: 3}
-  cost: 10000
+  cost: 0
+  compostmaterial: 0
