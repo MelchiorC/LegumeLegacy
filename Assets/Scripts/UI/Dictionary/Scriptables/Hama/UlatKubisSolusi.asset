@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: UlatKubisSolusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: Solusi Ulat Kubis
-  mechanicDescription: Hama ulat spesifik yang menyerang famili Brassicaceae dan
-    membuat daun berlubang hingga gagal membentuk krop. <link="UlatKubisSolusi"><color=#e8a96a>Klik
-    untuk solusinya</color></link>
-  mechanicImage: {fileID: 0}
+  mechanicDescription: "Semprotkan pestisida secara spesifik ke area bawah permukaan
+    daun. \nIni adalah solusi untuk <link=\"UlatKubis\"><color=#e8a96a>Ulat Kubis</color></link>"
+  mechanicImage: {fileID: -942683481, guid: 8948f8b86a33e9549b61ae3547c7b2ee, type: 3}
   linkedEntries:
   - {fileID: 11400000}

@@ -15,6 +15,6 @@ MonoBehaviour:
   mechanicName: Solusi Ulat Tanah
   mechanicDescription: Semprot dengan pestisida pada area batang dan tanah di malam
     hari. Ini adalah solusi untuk <link="UlatTanah"><color=#e8a96a>Ulat Tanah</color></link>
-  mechanicImage: {fileID: 0}
+  mechanicImage: {fileID: 21300000, guid: 3af4aad826c45064da15ca4b3d0ef147, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: cdf2fcc3a6d6fc54aa38f871c2958aca, type: 2}

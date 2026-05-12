@@ -31,6 +31,23 @@ public class HaraImage : MonoBehaviour
     public Button learnMoreButton;
     public TMP_Text learnMoreText;
 
+    public GameObject innerPanel;  
+    public GameObject extendPanel; 
+
+    public void ToggleExtend()
+{
+    bool isExpanded = extendPanel.activeSelf;
+    Debug.Log("isExpanded: " + isExpanded);
+    Debug.Log("Extend active before: " + extendPanel.activeSelf);
+    Debug.Log("Inner active before: " + innerPanel.activeSelf);
+    
+    extendPanel.SetActive(!isExpanded);
+    innerPanel.SetActive(isExpanded);
+    
+    Debug.Log("Extend active after: " + extendPanel.activeSelf);
+    Debug.Log("Inner active after: " + innerPanel.activeSelf);
+}
+
     public void IsItWatered(bool water)
     {
         Image img = Water.GetComponent<Image>();

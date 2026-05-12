@@ -16,6 +16,6 @@ MonoBehaviour:
   mechanicDescription: Hama yang aktif di malam hari dan menyerang dengan memotong
     batang tanaman yang masih muda. <link="UlatTanahSolusi"><color=#e8a96a>Klik untuk
     solusinya</color></link>
-  mechanicImage: {fileID: 21300000, guid: c3935ffe00a9c964cae8ebcacb7a7347, type: 3}
+  mechanicImage: {fileID: 21300000, guid: 3af4aad826c45064da15ca4b3d0ef147, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: 89d6e5a92e0417b45b4a0f1d71dfea7e, type: 2}

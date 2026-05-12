@@ -15,6 +15,6 @@ MonoBehaviour:
   mechanicName: Solusi Ulat Grayak
   mechanicDescription: Semprot dengan pestisida secara merata pada bagian daun. Ini
     adalah solusi untuk <link="UlatGrayak"><color=#e8a96a>Ulat Grayak</color></link>
-  mechanicImage: {fileID: 0}
+  mechanicImage: {fileID: 178441485, guid: f93baad8cf324ab4a9a847cdaf30fa4a, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: b657bec0ba97bc9478a4dbf7fae48961, type: 2}

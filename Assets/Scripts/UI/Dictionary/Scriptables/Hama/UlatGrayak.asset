@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: UlatGrayak
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: 'Ulat Grayak (Spodoptera sp.)  '
-  mechanicDescription: Serangga polifag yang sangat rakus. Memakan jaringan daun
-    hingga hanya menyisakan tulang daun. <link="UlatGrayakSolusi"><color=#e8a96a>Klik
-    untuk solusinya
-  mechanicImage: {fileID: -1718612839, guid: 22945f737769e9641a8d82d10dc3edfd, type: 3}
+  mechanicDescription: "Serangga polifag yang sangat rakus. Memakan jaringan daun
+    hingga hanya menyisakan tulang daun.\n <link=\"UlatGrayakSolusi\"><color=#e8a96a>Klik
+    untuk solusinya"
+  mechanicImage: {fileID: 178441485, guid: f93baad8cf324ab4a9a847cdaf30fa4a, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: ee0155f463bc97a4da56451f25eae723, type: 2}

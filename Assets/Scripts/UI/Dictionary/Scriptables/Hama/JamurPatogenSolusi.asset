@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: JamurPatogenSolusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: Solusi Jamur Patogen
-  mechanicDescription: Atur drainase lahan dan gunakan fungisida jika diperlukan.
-    Ini adalah solusi untuk <link="JamurPatogen"><color=#e8a96a>Jamur Patogen</color></link>
+  mechanicDescription: "Atur drainase lahan dan gunakan fungisida jika diperlukan.
+    \nIni adalah solusi untuk <link=\"JamurPatogen\"><color=#e8a96a>Jamur Patogen</color></link>"
   mechanicImage: {fileID: -1592577713, guid: 862f2313d643c954c94407a11f470b5e, type: 3}
   linkedEntries:
   - {fileID: 11400000, guid: dfe061df040c015469a72a74993acc8e, type: 2}
