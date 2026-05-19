@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
-  m_Name: Inventory
+  m_Name: Tas
   m_EditorClassIdentifier: 
-  mechanicName: Inventory
+  mechanicName: Tas
   mechanicDescription: Untuk menampulkan inventory, klik icon tas yang berada di
     kanan bawah layar atau klik tombol "B"
   mechanicImage: {fileID: 21300000, guid: 7ee6f438120a78e4a9e6769681afeaed, type: 3}
+  linkedEntries: []

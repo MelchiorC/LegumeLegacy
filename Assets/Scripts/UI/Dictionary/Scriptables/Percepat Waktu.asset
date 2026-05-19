@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
+  m_Name: Percepat Waktu
+  m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
+  mechanicName: Percepat Waktu
+  mechanicDescription: Untuk mempercepat waktu ke hari esok, klik "E" saat karakter
+    dekat dengan rumah
+  mechanicImage: {fileID: 21300000, guid: 80e8d6efc0fc6ad4d99657526751fe31, type: 3}
+  linkedEntries: []

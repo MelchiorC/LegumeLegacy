@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     const string IDLE = "Idle";
     const string WALK = "Walk";
+    const float ANIMATION_MOVE_THRESHOLD = 0.01f;
     public Boolean ONui = false;
 
     public UIManager UI;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     NavMeshAgent agent;
     Animator animator;
+    string currentAnimation;
     CharacterController characterController;
 
     PlayerInteraction playerInteraction;
@@ -156,14 +158,16 @@ public class PlayerController : MonoBehaviour
 
     void SetAnimations()
     {
-        if (moveInput != Vector2.zero || agent.velocity != Vector3.zero)
-        {
-            animator.Play(WALK);
-        }
-        else
-        {
-            animator.Play(IDLE);
-        }
+        if (animator == null) return;
+
+        bool isMovingWithInput = moveInput.sqrMagnitude > ANIMATION_MOVE_THRESHOLD;
+        bool isMovingWithAgent = agent != null && agent.enabled && agent.velocity.sqrMagnitude > ANIMATION_MOVE_THRESHOLD;
+        string targetAnimation = isMovingWithInput || isMovingWithAgent ? WALK : IDLE;
+
+        if (currentAnimation == targetAnimation) return;
+
+        animator.CrossFade(targetAnimation, 0.1f);
+        currentAnimation = targetAnimation;
     }
 
     void HandleUIInteraction()

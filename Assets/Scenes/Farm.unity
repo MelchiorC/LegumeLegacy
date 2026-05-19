@@ -34007,7 +34007,7 @@ MonoBehaviour:
     type: 3}
   AphidsIcon: {fileID: 21300000, guid: e709f239884749f4aac96623159a3af6, type: 3}
   ArmywormIcon: {fileID: 21300000, guid: f93baad8cf324ab4a9a847cdaf30fa4a, type: 3}
-  CutwormIcon: {fileID: 21300000, guid: 3af4aad826c45064da15ca4b3d0ef147, type: 3}
+  CutwormIcon: {fileID: 21300000, guid: 8d3c7de5daf1dc941a49c739752047d6, type: 3}
   CabbageWormIcon: {fileID: 21300000, guid: 8948f8b86a33e9549b61ae3547c7b2ee, type: 3}
   SpiderMitesIcon: {fileID: 21300000, guid: 46b8b444a86aba74881726ba036194f7, type: 3}
   StickText: {fileID: 1308126237}
