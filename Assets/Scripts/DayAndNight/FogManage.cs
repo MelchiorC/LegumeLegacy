@@ -21,11 +21,44 @@ public class FogManager : MonoBehaviour
     [Range(0, 23)] public int startFogHour = 18;
     [Range(0, 23)] public int endFogHour = 6;
 
+    private void Awake()
+    {
+        ResolveRuntimeReferences();
+        ApplyFogForCurrentTime();
+    }
+
+    private void OnEnable()
+    {
+        ResolveRuntimeReferences();
+        ApplyFogForCurrentTime();
+    }
+
     private void Update()
     {
+        ApplyFogForCurrentTime();
+    }
+
+    void ResolveRuntimeReferences()
+    {
+        if (timeManager == null)
+        {
+            timeManager = TimeManager.Instance;
+        }
+
+        if (weatherManager == null)
+        {
+            weatherManager = WeatherManager.Instance;
+        }
+    }
+
+    void ApplyFogForCurrentTime()
+    {
+        ResolveRuntimeReferences();
         if (preset == null || timeManager == null) return;
 
         GameTimestamp timestamp = timeManager.TimeGiver();
+        if (timestamp == null) return;
+
         float timePercent = GetTimePercent(timestamp);
 
         bool isWithinFogTime = IsWithinFogTime(timestamp.hour);
@@ -65,6 +98,7 @@ public class FogManager : MonoBehaviour
     void UpdateFog(float timePercent)
     {
         RenderSettings.fog = true;
+        RenderSettings.fogMode = FogMode.ExponentialSquared;
         RenderSettings.fogColor = preset.FogColor.Evaluate(timePercent);
 
         if (controlFogDensity)
@@ -72,6 +106,10 @@ public class FogManager : MonoBehaviour
             float curve = Mathf.Sin(timePercent * Mathf.PI * 2); // denser at night
             float dynamicDensity = baseFogDensity + (curve * maxFogVariation);
             RenderSettings.fogDensity = Mathf.Clamp(dynamicDensity, 0f, 1f);
+        }
+        else
+        {
+            RenderSettings.fogDensity = baseFogDensity;
         }
     }
 }

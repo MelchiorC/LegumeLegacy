@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class ShopListingManager : MonoBehaviour
 {
+    const float LISTING_VIEWPORT_HEIGHT_FALLBACK = 400f;
+    const float SCROLL_SENSITIVITY = 80f;
+    const float DRAG_CLICK_THRESHOLD = 6f;
+
     //The shop Listing entry prefab to instantiate
     public GameObject shopListing;
     //The transform of the grid to instantiate the entries on
@@ -22,10 +26,119 @@ public class ShopListingManager : MonoBehaviour
     public Button purchaseButton;
     public GameObject ListingGrid;
 
+    RectTransform listingRect;
+    RectTransform listingViewportRect;
+    float listingTopY;
+    float listingViewportHeight = LISTING_VIEWPORT_HEIGHT_FALLBACK;
+    float maxScrollOffset;
+    bool isPointerDownOnListing;
+    bool isDraggingListing;
+    bool suppressNextListingClick;
+    Vector2 dragStartPointerPosition;
+    Vector2 lastPointerPosition;
+
+    void Awake()
+    {
+        InitializeScrollableListingGrid();
+    }
+
+    void Update()
+    {
+        if (listingRect == null || ListingGrid == null || !ListingGrid.activeInHierarchy)
+        {
+            return;
+        }
+
+        HandleMouseDragScroll();
+        HandleMouseWheelScroll();
+    }
+
+    void HandleMouseWheelScroll()
+    {
+        float scrollDelta = Input.mouseScrollDelta.y;
+        if (Mathf.Approximately(scrollDelta, 0f))
+        {
+            return;
+        }
+
+        if (!IsPointerOverListingViewport())
+        {
+            return;
+        }
+
+        float targetY = listingRect.anchoredPosition.y - scrollDelta * SCROLL_SENSITIVITY;
+        SetListingScrollPosition(targetY);
+    }
+
+    void HandleMouseDragScroll()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            isPointerDownOnListing = IsPointerOverListingViewport();
+            isDraggingListing = false;
+            suppressNextListingClick = false;
+            dragStartPointerPosition = Input.mousePosition;
+            lastPointerPosition = dragStartPointerPosition;
+        }
+
+        if (Input.GetMouseButton(0) && isPointerDownOnListing)
+        {
+            Vector2 currentPointerPosition = Input.mousePosition;
+            Vector2 totalDrag = currentPointerPosition - dragStartPointerPosition;
+            Vector2 frameDrag = currentPointerPosition - lastPointerPosition;
+
+            if (!isDraggingListing && totalDrag.magnitude >= DRAG_CLICK_THRESHOLD)
+            {
+                isDraggingListing = true;
+                suppressNextListingClick = true;
+            }
+
+            if (isDraggingListing)
+            {
+                SetListingScrollPosition(listingRect.anchoredPosition.y + frameDrag.y);
+            }
+
+            lastPointerPosition = currentPointerPosition;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isPointerDownOnListing = false;
+            isDraggingListing = false;
+        }
+    }
+
+    public bool ConsumeListingClickSuppression()
+    {
+        if (!suppressNextListingClick)
+        {
+            return false;
+        }
+
+        suppressNextListingClick = false;
+        return true;
+    }
+
     public void RenderShop(List<ItemData> shopItems)
     {
-        ListingGrid.SetActive(true);
+        InitializeScrollableListingGrid();
+
+        if (shopItems == null)
+        {
+            shopItems = new List<ItemData>();
+        }
+
+        if (ListingGrid != null)
+        {
+            ListingGrid.SetActive(true);
+        }
+
         confirmationScreen.SetActive(false);
+        if (listingGrid == null)
+        {
+            return;
+        }
+
         //Reset the listings if there was a previous one
         if(listingGrid.childCount > 0)
         {
@@ -44,6 +157,9 @@ public class ShopListingManager : MonoBehaviour
             //Assign it the shop item and display listing
             listingGameObject.GetComponent<ShopListing>().Display(shopItem);
         }
+
+        ResizeListingContent(shopItems.Count);
+        ResetListingScroll();
     }
 
     public void OpenConfirmationScreen(ItemData item)
@@ -57,7 +173,10 @@ public class ShopListingManager : MonoBehaviour
     {
         confirmationScreen.SetActive(true);
 
-        ListingGrid.SetActive(false);
+        if (ListingGrid != null)
+        {
+            ListingGrid.SetActive(false);
+        }
 
         confirmationPrompt.text = $"Beli {itemToBuy.name}?";
 
@@ -105,6 +224,118 @@ public class ShopListingManager : MonoBehaviour
     public void CancelPurchase()
     {
         confirmationScreen.SetActive(false);
-        ListingGrid.SetActive(true);
+        if (ListingGrid != null)
+        {
+            ListingGrid.SetActive(true);
+        }
+    }
+
+    void InitializeScrollableListingGrid()
+    {
+        if (listingGrid == null || listingRect != null)
+        {
+            return;
+        }
+
+        listingRect = listingGrid as RectTransform;
+        if (listingRect == null)
+        {
+            return;
+        }
+
+        RectTransform parentRect = listingRect.parent as RectTransform;
+        if (parentRect == null)
+        {
+            return;
+        }
+
+        listingViewportRect = parentRect;
+        listingViewportHeight = Mathf.Max(listingRect.rect.height, LISTING_VIEWPORT_HEIGHT_FALLBACK);
+        listingTopY = listingRect.anchoredPosition.y + listingRect.rect.height * (1f - listingRect.pivot.y);
+        listingRect.pivot = new Vector2(listingRect.pivot.x, 1f);
+        listingRect.anchoredPosition = new Vector2(listingRect.anchoredPosition.x, listingTopY);
+
+        if (parentRect.GetComponent<RectMask2D>() == null)
+        {
+            parentRect.gameObject.AddComponent<RectMask2D>();
+        }
+
+        GridLayoutGroup gridLayout = listingRect.GetComponent<GridLayoutGroup>();
+        if (gridLayout != null)
+        {
+            gridLayout.childAlignment = TextAnchor.UpperCenter;
+        }
+    }
+
+    void ResizeListingContent(int itemCount)
+    {
+        if (listingRect == null)
+        {
+            return;
+        }
+
+        GridLayoutGroup gridLayout = listingRect.GetComponent<GridLayoutGroup>();
+        if (gridLayout == null)
+        {
+            return;
+        }
+
+        int columns = GetColumnCount(gridLayout);
+        int rows = Mathf.CeilToInt(itemCount / (float)columns);
+        float contentHeight = gridLayout.padding.top + gridLayout.padding.bottom;
+
+        if (rows > 0)
+        {
+            contentHeight += rows * gridLayout.cellSize.y;
+            contentHeight += (rows - 1) * gridLayout.spacing.y;
+        }
+
+        float finalHeight = Mathf.Max(contentHeight, listingViewportHeight);
+        maxScrollOffset = Mathf.Max(0f, finalHeight - listingViewportHeight);
+        listingRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, finalHeight);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(listingRect);
+    }
+
+    void ResetListingScroll()
+    {
+        if (listingRect == null)
+        {
+            return;
+        }
+
+        listingRect.anchoredPosition = new Vector2(listingRect.anchoredPosition.x, listingTopY);
+    }
+
+    void SetListingScrollPosition(float targetY)
+    {
+        targetY = Mathf.Clamp(targetY, listingTopY, listingTopY + maxScrollOffset);
+        listingRect.anchoredPosition = new Vector2(listingRect.anchoredPosition.x, targetY);
+    }
+
+    bool IsPointerOverListingViewport()
+    {
+        if (listingViewportRect == null)
+        {
+            return false;
+        }
+
+        return RectTransformUtility.RectangleContainsScreenPoint(listingViewportRect, Input.mousePosition);
+    }
+
+    int GetColumnCount(GridLayoutGroup gridLayout)
+    {
+        if (gridLayout.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+        {
+            return Mathf.Max(1, gridLayout.constraintCount);
+        }
+
+        if (gridLayout.constraint == GridLayoutGroup.Constraint.FixedRowCount)
+        {
+            return Mathf.Max(1, Mathf.CeilToInt(gridLayout.transform.childCount / (float)gridLayout.constraintCount));
+        }
+
+        float contentWidth = listingRect != null ? listingRect.rect.width : gridLayout.cellSize.x;
+        float cellWidth = gridLayout.cellSize.x + gridLayout.spacing.x;
+        return Mathf.Max(1, Mathf.FloorToInt((contentWidth + gridLayout.spacing.x) / cellWidth));
     }
 }

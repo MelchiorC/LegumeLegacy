@@ -22,6 +22,11 @@ public class ShopListing : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (UIManager.Instance.shopListingManager.ConsumeListingClickSuppression())
+        {
+            return;
+        }
+
         UIManager.Instance.shopListingManager.OpenConfirmationScreen(itemData);
     }
 

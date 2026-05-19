@@ -10,7 +10,12 @@ public class PlayerController : MonoBehaviour
 {
     const string IDLE = "Idle";
     const string WALK = "Walk";
-    const float ANIMATION_MOVE_THRESHOLD = 0.01f;
+    const string IDLE_STATE_PATH = "Base Layer.Idle";
+    const string WALK_STATE_PATH = "Base Layer.Walk";
+    const float INPUT_MOVE_THRESHOLD = 0.01f;
+    const float POSITION_MOVE_THRESHOLD = 0.0001f;
+    const float ARRIVAL_VELOCITY_THRESHOLD = 0.01f;
+    const float NAVIGATION_SETTLE_TIME = 0.1f;
     public Boolean ONui = false;
 
     public UIManager UI;
@@ -26,8 +31,11 @@ public class PlayerController : MonoBehaviour
     public GameObject HaraUI;
 
     NavMeshAgent agent;
-    Animator animator;
+    Animator[] animators;
     string currentAnimation;
+    Vector3 lastAnimationPosition;
+    bool isClickNavigating;
+    float clickNavigationStartTime;
     CharacterController characterController;
 
     PlayerInteraction playerInteraction;
@@ -48,8 +56,9 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+        animators = GetComponentsInChildren<Animator>();
         characterController = GetComponent<CharacterController>();
+        lastAnimationPosition = transform.position;
         input = new CustomActions();
         AssignInputs();
     }
@@ -88,6 +97,9 @@ public class PlayerController : MonoBehaviour
             agent.ResetPath();
             agent.isStopped = false;
             agent.destination = hit.point;
+            isClickNavigating = true;
+            clickNavigationStartTime = Time.time;
+            ChangeAnimation(WALK);
 
             if (clickEffect != null)
             {
@@ -104,6 +116,7 @@ public class PlayerController : MonoBehaviour
     {
         if (moveInput != Vector2.zero)
         {
+            isClickNavigating = false;
             if (agent.enabled && !agent.isStopped) agent.isStopped = true; // Only stop if agent is enabled
             MoveWithWASD();
         }
@@ -113,6 +126,7 @@ public class PlayerController : MonoBehaviour
             FaceTarget();
         }
 
+        UpdateClickNavigationState();
         SetAnimations();
         HandleUIInteraction();
         Interact();
@@ -158,16 +172,130 @@ public class PlayerController : MonoBehaviour
 
     void SetAnimations()
     {
-        if (animator == null) return;
+        if (animators == null || animators.Length == 0) return;
 
-        bool isMovingWithInput = moveInput.sqrMagnitude > ANIMATION_MOVE_THRESHOLD;
-        bool isMovingWithAgent = agent != null && agent.enabled && agent.velocity.sqrMagnitude > ANIMATION_MOVE_THRESHOLD;
-        string targetAnimation = isMovingWithInput || isMovingWithAgent ? WALK : IDLE;
+        Vector3 planarDelta = transform.position - lastAnimationPosition;
+        planarDelta.y = 0f;
+        lastAnimationPosition = transform.position;
 
-        if (currentAnimation == targetAnimation) return;
+        bool isMovingWithInput = moveInput.sqrMagnitude > INPUT_MOVE_THRESHOLD;
+        bool movedSinceLastFrame = planarDelta.sqrMagnitude > POSITION_MOVE_THRESHOLD;
+        bool hasActiveAgentPath = agent != null &&
+                                  agent.enabled &&
+                                  !agent.isStopped &&
+                                  agent.hasPath &&
+                                  agent.remainingDistance > agent.stoppingDistance + 0.05f;
 
-        animator.CrossFade(targetAnimation, 0.1f);
+        string targetAnimation = isMovingWithInput || isClickNavigating || movedSinceLastFrame || hasActiveAgentPath ? WALK : IDLE;
+
+        ChangeAnimation(targetAnimation);
+    }
+
+    void UpdateClickNavigationState()
+    {
+        if (!isClickNavigating)
+        {
+            return;
+        }
+
+        if (Time.time - clickNavigationStartTime < NAVIGATION_SETTLE_TIME)
+        {
+            return;
+        }
+
+        if (agent == null || !agent.enabled || agent.isStopped)
+        {
+            isClickNavigating = false;
+            return;
+        }
+
+        if (agent.pathPending)
+        {
+            return;
+        }
+
+        bool hasArrived = agent.remainingDistance <= agent.stoppingDistance + 0.05f &&
+                          agent.velocity.sqrMagnitude <= ARRIVAL_VELOCITY_THRESHOLD;
+
+        if (hasArrived || !agent.hasPath)
+        {
+            isClickNavigating = false;
+        }
+    }
+
+    void ChangeAnimation(string targetAnimation)
+    {
+        if (animators == null || animators.Length == 0)
+        {
+            return;
+        }
+
+        if (currentAnimation == targetAnimation && AreAnimatorsInState(targetAnimation))
+        {
+            return;
+        }
+
+        foreach (Animator targetAnimator in animators)
+        {
+            if (targetAnimator == null || !targetAnimator.isActiveAndEnabled || targetAnimator.runtimeAnimatorController == null)
+            {
+                continue;
+            }
+
+            int stateHash = GetAnimationStateHash(targetAnimator, targetAnimation);
+            targetAnimator.CrossFadeInFixedTime(stateHash, 0.08f, 0);
+        }
+
         currentAnimation = targetAnimation;
+    }
+
+    int GetAnimationStateHash(Animator targetAnimator, string animationName)
+    {
+        int fullPathHash = Animator.StringToHash(animationName == WALK ? WALK_STATE_PATH : IDLE_STATE_PATH);
+        if (targetAnimator.HasState(0, fullPathHash))
+        {
+            return fullPathHash;
+        }
+
+        return Animator.StringToHash(animationName);
+    }
+
+    bool AreAnimatorsInState(string animationName)
+    {
+        foreach (Animator targetAnimator in animators)
+        {
+            if (targetAnimator == null || !targetAnimator.isActiveAndEnabled || targetAnimator.runtimeAnimatorController == null)
+            {
+                continue;
+            }
+
+            if (!IsAnimatorStateActive(targetAnimator, animationName))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool IsAnimatorStateActive(Animator targetAnimator, string animationName)
+    {
+        int fullPathHash = Animator.StringToHash(animationName == WALK ? WALK_STATE_PATH : IDLE_STATE_PATH);
+        int shortNameHash = Animator.StringToHash(animationName);
+
+        AnimatorStateInfo currentState = targetAnimator.GetCurrentAnimatorStateInfo(0);
+        if (currentState.fullPathHash == fullPathHash || currentState.shortNameHash == shortNameHash)
+        {
+            return true;
+        }
+
+        if (!targetAnimator.IsInTransition(0))
+        {
+            return false;
+        }
+
+        AnimatorStateInfo nextState = targetAnimator.GetNextAnimatorStateInfo(0);
+        return nextState.fullPathHash == fullPathHash || nextState.shortNameHash == shortNameHash;
     }
 
     void HandleUIInteraction()
