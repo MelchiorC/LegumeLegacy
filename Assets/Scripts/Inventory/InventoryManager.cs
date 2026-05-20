@@ -293,7 +293,7 @@ public class InventoryManager : MonoBehaviour
         if(SlotEquipped(InventorySlot.InventoryType.Item))
         {
             //Instantiate the game model on the player's hand and put it on the scene
-            Instantiate(GetEquippedSlotItem(InventorySlot.InventoryType.Item).gameModel, handPoint);
+            //Instantiate(GetEquippedSlotItem(InventorySlot.InventoryType.Item).gameModel, handPoint);
         }
     }
 

@@ -20,6 +20,7 @@ public class ShopListingManager : MonoBehaviour
 
     [Header("Confirmation Screen")]
     public GameObject confirmationScreen;
+    public Image confirmationThumbnail;
     public Text confirmationPrompt;
     public Text quantityText;
     public Text costCalculationText;
@@ -40,6 +41,7 @@ public class ShopListingManager : MonoBehaviour
     void Awake()
     {
         InitializeScrollableListingGrid();
+        CacheConfirmationThumbnail();
     }
 
     void Update()
@@ -179,6 +181,7 @@ public class ShopListingManager : MonoBehaviour
         }
 
         confirmationPrompt.text = $"Beli {itemToBuy.name}?";
+        RenderConfirmationThumbnail();
 
         quantityText.text = "x" + quantity;
 
@@ -197,6 +200,40 @@ public class ShopListingManager : MonoBehaviour
         purchaseButton.interactable = true; 
 
         costCalculationText.text = $"{PlayerStats.Money} > {playerMoneyLeft} ";
+    }
+
+    void RenderConfirmationThumbnail()
+    {
+        CacheConfirmationThumbnail();
+
+        if (confirmationThumbnail == null)
+        {
+            return;
+        }
+
+        Sprite thumbnail = itemToBuy != null ? itemToBuy.thumbnail : null;
+        confirmationThumbnail.sprite = thumbnail;
+        confirmationThumbnail.preserveAspect = true;
+        confirmationThumbnail.enabled = thumbnail != null;
+    }
+
+    void CacheConfirmationThumbnail()
+    {
+        if (confirmationThumbnail != null || confirmationScreen == null)
+        {
+            return;
+        }
+
+        Image[] images = confirmationScreen.GetComponentsInChildren<Image>(true);
+        foreach (Image image in images)
+        {
+            string imageName = image.gameObject.name.ToLowerInvariant();
+            if (imageName.Contains("thumbnail") || imageName.Contains("item icon") || imageName.Contains("itemimage") || imageName.Contains("item image"))
+            {
+                confirmationThumbnail = image;
+                return;
+            }
+        }
     }
 
     public void AddQuantity()

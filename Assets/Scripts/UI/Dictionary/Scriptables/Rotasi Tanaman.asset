@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
+  m_Name: Rotasi Tanaman
+  m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
+  mechanicName: Rotasi Tanaman
+  mechanicDescription: Rotasi tanaman adalah praktik menanam jenis tanaman berbeda
+    secara bergantian di lahan yang sama pada periode tertentu. Teknik ini krusial
+    untuk memutus siklus hama dan penyakit. Untuk melakukan rotasi tanaman, tanamlah
+    tanaman yang berbeda pada satu petak tanah. Disarankan untuk menanam tanaman
+    "puera" terlebih dahulu sebelum menanam tanaman penghasil agar hasil maksimal
+  mechanicImage: {fileID: 21300000, guid: 76369a98cb076fa42a8f4e888f6d2d38, type: 3}
+  linkedEntries: []

@@ -11,7 +11,7 @@ public class ItemData : ScriptableObject
     public Sprite thumbnail;
 
     //GameObject to be shown in the scence
-    public GameObject gameModel;
+    //public GameObject gameModel;
 
     //The item costs
     public int cost;

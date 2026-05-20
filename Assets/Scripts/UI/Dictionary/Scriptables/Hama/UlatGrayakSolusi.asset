@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UlatGrayakSolusi
   m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
   mechanicName: Solusi Ulat Grayak
-  mechanicDescription: Gunakan Bacillus thuringiensis. Ini adalah solusi untuk <link="UlatGrayak"><color=#e8a96a>Ulat
+  mechanicDescription: Gunakan Bacillus thuringiensis atau Pestisida Nabati. Ini adalah solusi untuk <link="UlatGrayak"><color=#e8a96a>Ulat
     Grayak</color></link>
   mechanicImage: {fileID: 21300000, guid: b13a8cc92bf6a1f41bde4729e1ec08a8, type: 3}
   linkedEntries:

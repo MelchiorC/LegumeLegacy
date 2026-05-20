@@ -29,6 +29,10 @@ public class InteractableObject : MonoBehaviour
 
         // Report Harvest Quest progress here
         QuestManager.Instance.ReportAction(QuestData.QuestType.Harvest, cropType);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPickupSFX();
+        }
 
         //Set the player's inventory to the item
         //InventoryManager.Instance.EquipHandSlot(item);

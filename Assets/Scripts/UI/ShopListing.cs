@@ -27,6 +27,11 @@ public class ShopListing : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             return;
         }
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayShopClickSFX();
+        }
+
         UIManager.Instance.shopListingManager.OpenConfirmationScreen(itemData);
     }
 

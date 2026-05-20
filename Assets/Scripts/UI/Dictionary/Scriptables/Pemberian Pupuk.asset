@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d2a62b5ce4eec4686c0a9e45ba2d0f, type: 3}
+  m_Name: Pemberian Pupuk
+  m_EditorClassIdentifier: Assembly-CSharp::MechanicEntry
+  mechanicName: Pemberian Pupuk
+  mechanicDescription: Setelah tanaman ditanam, opsional untuk diberi pupuk. Pupuk
+    akan mempercepat masa tumbuh tanaman dan memberikan hasil panen tambahan. Untuk
+    memberi pupuk, klik "F" pada tanah yang telah ditanam tanaman. Pastikan pupuk
+    berada di tangan utama
+  mechanicImage: {fileID: 21300000, guid: a153022d3a05c1040b80c78404cb6d44, type: 3}
+  linkedEntries: []
