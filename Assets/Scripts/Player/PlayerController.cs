@@ -300,8 +300,51 @@ public class PlayerController : MonoBehaviour
 
     void HandleUIInteraction()
     {
+        if (Input.GetKeyDown(KeyCode.Escape)) CloseOpenedUI();
         if (Input.GetKeyDown(KeyCode.B)) UI.ToggleInventoryPanel();
         ONui = CompostUI.activeInHierarchy || Backpack.activeSelf || ShopUI.activeInHierarchy || ShippingBinUI.activeInHierarchy;
+    }
+
+    void CloseOpenedUI()
+    {
+        if (UI != null)
+        {
+            UI.CloseOpenedPanels();
+        }
+
+        if (CompostUI != null && CompostUI.activeInHierarchy)
+        {
+            if (compost != null)
+            {
+                compost.HideUI();
+            }
+            else
+            {
+                CompostUI.SetActive(false);
+            }
+        }
+
+        if (ShopUI != null)
+        {
+            ShopUI.SetActive(false);
+        }
+
+        if (ShippingBinUI != null)
+        {
+            ShippingBinUI.SetActive(false);
+        }
+
+        if (Backpack != null)
+        {
+            Backpack.SetActive(false);
+        }
+
+        if (HaraUI != null)
+        {
+            HaraUI.SetActive(false);
+        }
+
+        ONui = false;
     }
 
     public void Interact()

@@ -2487,7 +2487,6 @@ MonoBehaviour:
   boost: 0
   cropType: 
   shopItems:
-  - {fileID: 11400000, guid: caaa11f2ab6a73142ac2302f281462fb, type: 2}
   - {fileID: 11400000, guid: d87f6e523b85a4b4482b4cb5470b3084, type: 2}
   - {fileID: 11400000, guid: e14dfab12710c7645ad30d86a5a9b67b, type: 2}
   - {fileID: 11400000, guid: 1b172ae5e851c7c44acd094f84d4dcd2, type: 2}

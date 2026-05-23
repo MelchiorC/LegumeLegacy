@@ -342,6 +342,22 @@ public class UIManager : MonoBehaviour, ITimeTracker
         Hara.gameObject.SetActive(false);
     }
 
+    public void CloseOpenedPanels()
+    {
+        if (inventoryPanel != null)
+            inventoryPanel.SetActive(false);
+
+        if (shopListingManager != null)
+            shopListingManager.gameObject.SetActive(false);
+
+        if (yesNoPrompt != null)
+            yesNoPrompt.gameObject.SetActive(false);
+
+        DisplayItemInfo(null);
+        CloseUI();
+        HideDictionaryPanels();
+    }
+
     #region Dictionary Panels
     private void InitializeDictionaryPanels()
     {
